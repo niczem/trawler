@@ -10,9 +10,7 @@ const fs = require('fs').promises;
 const Fs = require('fs');
 
 const puppeteer = require('puppeteer');
-const rimraf = require("rimraf");
-
-
+const rimraf = require('rimraf');
 
 const cheerio = require('cheerio'),
   axios = require('axios');
@@ -50,21 +48,27 @@ class onionlistCrawler {
       });
   }
 
-  async takeScreenShot(url,path){
-        const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox','--proxy-server=socks5://127.0.0.1:9050']});
-        const page = await browser.newPage();
-        try{
-          await page.goto(url, { waitUntil: "networkidle0", timeout: 10000 });
-          
-          await page.setViewport({ width: 1024, height: 800 });
-          await page.screenshot({
-            path: path+'/'+url.replace(/[^\w\s]/gi, '')+'.png',
-            fullPage: true
-          });  
-        }catch(e){
-          console.log('error', e)
-        };
-        await browser.close();
+  async takeScreenShot(url, path) {
+    const browser = await puppeteer.launch({
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--proxy-server=socks5://127.0.0.1:9050',
+      ],
+    });
+    const page = await browser.newPage();
+    try {
+      await page.goto(url, { waitUntil: 'networkidle0', timeout: 10000 });
+
+      await page.setViewport({ width: 1024, height: 800 });
+      await page.screenshot({
+        path: path + '/' + url.replace(/[^\w\s]/gi, '') + '.png',
+        fullPage: true,
+      });
+    } catch (e) {
+      console.log('error', e);
+    }
+    await browser.close();
   }
   getPageInfo(link) {
     let self = this;
@@ -198,31 +202,33 @@ module.exports = class Datasource extends Worker {
             job.properties.category,
             job.properties.limit,
             async function (posts) {
-
-
-              let download_path = path.resolve(__dirname, '../../data/' + job.id);
+              let download_path = path.resolve(
+                __dirname,
+                '../../data/' + job.id
+              );
 
               if (!Fs.existsSync(download_path)) {
                 Fs.mkdirSync(download_path);
                 console.log('created dir ' + download_path);
               }
 
-              for(let i in posts){
-                
+              for (let i in posts) {
                 console.log(posts[i].link);
-                console.log(i+'/'+posts.length);
+                console.log(i + '/' + posts.length);
 
-                try{
-                  await crawler.takeScreenShot(posts[i].link.replace('.voto',''),download_path);
-                }catch(e){
+                try {
+                  await crawler.takeScreenShot(
+                    posts[i].link.replace('.voto', ''),
+                    download_path
+                  );
+                } catch (e) {
                   console.log(e);
                 }
                 console.log('done');
               }
 
-              
               console.log('zip screenshot dir');
-              await self.zipDir(download_path,download_path+'.zip',job.id);
+              await self.zipDir(download_path, download_path + '.zip', job.id);
               console.log('zipping done..');
 
               console.log('delete directory...');

@@ -8,7 +8,7 @@
         <td>Filetype</td>
         <td>Download</td>
       </tr>
-      <tr v-for="(crawl) in crawls.data" v-bind:key="crawl">
+      <tr v-for="crawl in crawls.data" v-bind:key="crawl">
         <td>
           {{ ('0' + (new Date(crawl.date).getUTCDate() + 1)).slice(-2) }}.{{
             '0' + (new Date(crawl.date).getUTCMonth() + 1)

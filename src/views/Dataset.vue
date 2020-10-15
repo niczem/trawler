@@ -3,11 +3,11 @@
     <h1>Dataset {{ $route.params.id }}</h1>
     <p></p>
     <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Search"
+      single-line
+      hide-details
     ></v-text-field>
     <div v-for="(rows, index) in data.data" v-bind:key="index">
       <h3 v-if="index !== 'sqlite_sequence'">table: {{ index }}</h3>
@@ -30,7 +30,7 @@ export default {
   name: 'Dataset',
   data: () => ({
     data: [],
-    search: ''
+    search: '',
   }),
   methods: {
     getData: function () {

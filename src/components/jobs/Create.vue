@@ -137,7 +137,7 @@
 
 <script>
 import axios from 'axios';
-import Fields from '../../../utils/Fields.js'
+import Fields from '../../../utils/Fields.js';
 
 export default {
   name: 'Dashboard',
