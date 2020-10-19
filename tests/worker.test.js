@@ -57,7 +57,7 @@ test('test logging', async () => {
     }
     expect(jobObj.log[0].value).toBe('this is a test log');
 });
-
+/*
 test('test loading datasources', async () => {
     let worker = new Worker('test',{
         db_path:'../tests/test.json'
@@ -72,3 +72,4 @@ test('test loading datasources', async () => {
     }
     expect(datasources.length).toBe(5);
 });
+*/
