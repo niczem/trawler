@@ -415,7 +415,7 @@ module.exports = class Datasource extends Worker {
 
     return [
       {
-        identifier: 'posts',
+        identifier: 'facebook_posts',
         fields: [
           {
             name: 'identifier',
