@@ -383,7 +383,7 @@ class FacebookCrawler {
     const username = process.env.facebook_username;
     const password = process.env.facebook_password;
 
-    console.log(username,password,run_headless)
+    console.log(username, password, run_headless);
     const browser = await puppeteer.launch({
       headless: run_headless,
     });

@@ -35,7 +35,11 @@ export default {
   methods: {
     getData: function () {
       axios
-        .get(process.env.VUE_APP_API_BASE_URL+'/datasets/' + this.$route.params.id)
+        .get(
+          process.env.VUE_APP_API_BASE_URL +
+            '/datasets/' +
+            this.$route.params.id
+        )
         .then((response) => {
           for (let table_index in response.data.data) {
             console.log(table_index);

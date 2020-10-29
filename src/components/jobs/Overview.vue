@@ -97,7 +97,7 @@ export default {
   methods: {
     getJobs: function () {
       axios
-        .get(process.env.VUE_APP_API_BASE_URL+'/jobs')
+        .get(process.env.VUE_APP_API_BASE_URL + '/jobs')
         .then((response) => (this.jobs = response));
     },
   },

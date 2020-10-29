@@ -67,15 +67,17 @@ export default {
   }),
   methods: {
     getCrawls: function () {
-      axios.get(process.env.VUE_APP_API_BASE_URL+'/datasets').then((response) => {
-        this.crawls = response.data;
-        for (let i in this.crawls.data) {
-          this.crawls.data[i] = {
-            filename: this.crawls.data[i],
-            date: new Date(parseInt(this.crawls.data[i].split('_')[0])),
-          };
-        }
-      });
+      axios
+        .get(process.env.VUE_APP_API_BASE_URL + '/datasets')
+        .then((response) => {
+          this.crawls = response.data;
+          for (let i in this.crawls.data) {
+            this.crawls.data[i] = {
+              filename: this.crawls.data[i],
+              date: new Date(parseInt(this.crawls.data[i].split('_')[0])),
+            };
+          }
+        });
     },
   },
   mounted: function () {
