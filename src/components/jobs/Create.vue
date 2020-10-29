@@ -60,6 +60,21 @@
       >
     </div>
 
+
+    <div class="form-check" v-if="type">
+      <input
+        type="checkbox"
+        v-model="schedule.repeat"
+        value="1"
+        class="form-check-input"
+      />
+      <label class="form-check-label">schedule </label>
+    </div>
+
+    <div class="form-group" v-if="schedule.repeat" style="padding-left:15px;">
+      <input class="form-control" placeholder="time" type="datetime-local" id="scheduletime" v-model="schedule.scheduletime"/>
+    </div>
+
     <div class="form-check" v-if="type">
       <input
         type="checkbox"
@@ -67,15 +82,9 @@
         value="1"
         class="form-check-input"
       />
-      <label class="form-check-label">schedule </label>
+      <label class="form-check-label">repeat </label>
     </div>
-    <div v-if="schedule.active">
-      <div class="form-check">
-        <input type="checkbox" value="1" class="form-check-input" />
-        <label class="form-check-label"
-          >merge datasets with previous crawls</label
-        >
-      </div>
+    <div v-if="schedule.active" style="padding-left:15px;">
       <div class="custom-control custom-radio">
         <input
           type="radio"
@@ -129,6 +138,12 @@
           >Monthly</label
         >
       </div>
+      <div class="form-check">
+        <input type="checkbox" value="1" class="form-check-input" />
+        <label class="form-check-label"
+          >merge datasets with previous crawls</label
+        >
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
@@ -162,7 +177,7 @@ export default {
 
       let self = this;
       axios
-        .post('http://localhost:3000/jobs', {
+        .post(process.env.VUE_APP_API_BASE_URL+'/jobs', {
           type: this.type,
           properties: this.properties,
         })

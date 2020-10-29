@@ -67,7 +67,7 @@ export default {
   }),
   methods: {
     getCrawls: function () {
-      axios.get('http://localhost:3000/datasets').then((response) => {
+      axios.get(process.env.VUE_APP_API_BASE_URL+'/datasets').then((response) => {
         this.crawls = response.data;
         for (let i in this.crawls.data) {
           this.crawls.data[i] = {
