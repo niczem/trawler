@@ -11,7 +11,7 @@ const fs = require('fs').promises;
 const url = require('url');
 
 const timeout = 7000;
-const run_headless = process.env.run_headless;
+const run_headless = false;
 let browser;
 
 class Utils {
@@ -383,12 +383,15 @@ class FacebookCrawler {
     const username = process.env.facebook_username;
     const password = process.env.facebook_password;
 
+    console.log(username,password,run_headless)
     const browser = await puppeteer.launch({
       headless: run_headless,
     });
     const page = await browser.newPage();
 
     await page.goto('https://m.facebook.com/');
+
+    await page.click('#accept-cookie-banner-label');
     await page.focus('#m_login_email');
     await page.keyboard.type(username);
     await page.focus('#m_login_password');

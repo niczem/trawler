@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "mkdir data&&touch data/db.json",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
-    "googlesearch:install":"cd GoogleSearchCrawler && pip install -r requirements.txt"
+    "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt"
   },
   "dependencies": {
     "axios": "^0.19.2",
