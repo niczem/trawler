@@ -162,7 +162,32 @@ app.get('/datasets/:id', function (req, res) {
 			});
 		
 			exporter.all(function (err, all) {
-				res.send({data:all});	
+				res.send({data:all});
+			});
+			break;
+		case 'zip':
+			let files = [];
+			const StreamZip = require('node-stream-zip');
+			const zip = new StreamZip({
+				file: `./data/${req.params.id}`,
+				storeEntries: true
+			});
+			// Handle errors
+			zip.on('error', err => { /*...*/ });
+		
+			zip.on('ready', () => {
+				console.log('Entries read: ' + zip.entriesCount);
+				for (const entry of Object.values(zip.entries())) {
+					const desc = entry.isDirectory ? 'directory' : `${entry.size} bytes`;
+					console.log(`Entry ${entry.name}: ${desc}`);
+					files.push([entry.name]);
+				}
+
+				res.send({data:{
+					files:files
+				}});
+					// Do not forget to close the file once you're done
+				zip.close()
 			});
 			break;
 	}

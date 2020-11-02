@@ -9,7 +9,6 @@
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
-    "googlesearch:install":"cd GoogleSearchCrawler && pip install -r requirements.txt"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -20,6 +19,7 @@
     "csvtojson": "^2.0.10",
     "ffmpeg": "0.0.4",
     "lowdb": "^1.0.0",
+    "node-stream-zip": "^1.11.4",
     "puppeteer": "^5.2.1",
     "sequelize": "^5.22.3",
     "sqlite-to-json": "^0.1.3",
