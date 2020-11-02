@@ -60,7 +60,6 @@
       >
     </div>
 
-
     <div class="form-check" v-if="type">
       <input
         type="checkbox"
@@ -71,8 +70,14 @@
       <label class="form-check-label">schedule </label>
     </div>
 
-    <div class="form-group" v-if="schedule.repeat" style="padding-left:15px;">
-      <input class="form-control" placeholder="time" type="datetime-local" id="scheduletime" v-model="schedule.scheduletime"/>
+    <div class="form-group" v-if="schedule.repeat" style="padding-left: 15px">
+      <input
+        class="form-control"
+        placeholder="time"
+        type="datetime-local"
+        id="scheduletime"
+        v-model="schedule.scheduletime"
+      />
     </div>
 
     <div class="form-check" v-if="type">
@@ -84,7 +89,7 @@
       />
       <label class="form-check-label">repeat </label>
     </div>
-    <div v-if="schedule.active" style="padding-left:15px;">
+    <div v-if="schedule.active" style="padding-left: 15px">
       <div class="custom-control custom-radio">
         <input
           type="radio"
@@ -177,7 +182,7 @@ export default {
 
       let self = this;
       axios
-        .post(process.env.VUE_APP_API_BASE_URL+'/jobs', {
+        .post(process.env.VUE_APP_API_BASE_URL + '/jobs', {
           type: this.type,
           properties: this.properties,
         })

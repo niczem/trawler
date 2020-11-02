@@ -47,14 +47,19 @@ class FacebookCrawler {
       await this.autoScroll(page);
       let self = this;
 
+
+      //check if user is logged in
       let check_auth = await this.checkAuth(page);
+      //check auth also logs in but returns false if user was not logged in before
       if (!check_auth) {
-        return false;
+        await page.close();
+        //call function again
+        return this.getPosts(pagename, limit, callback);
       }
 
-      let interval = setInterval(async function () {
-        console.log('asd');
+      let not_increased = 0;
 
+      let interval = setInterval(async function () {
         let items = await page.evaluate(() => {
           let results = [];
           let items = document.querySelectorAll('article');
@@ -99,18 +104,20 @@ class FacebookCrawler {
           return results;
         });
 
-        for (let i in items) {
-          console.log(items[i]);
-        }
-
         if (items.length > last_length) {
-          console.log('wouhuhuu increased (found new entries)');
+          not_increased = 0; //reset not increased counter
+          console.log('amount of items increased (found new entries)');
+        }else{
+          not_increased++;
         }
 
         await self.autoScroll(page);
         console.log(`autoscroll finished ${limit_count}/${limit}`);
 
-        if (limit_count >= limit) {
+
+        if (limit_count >= limit||
+          not_increased>=3 //exit if amount does not increase after 3 intervals
+          ) {
           console.log('done');
           clearInterval(interval);
 
@@ -134,7 +141,10 @@ class FacebookCrawler {
     } catch (e) {
       console.log(e);
       if (e.errno == -2) {
+
+        console.log('.... wait for login');
         await login();
+        console.log('..done');
       }
     }
 
@@ -389,6 +399,8 @@ class FacebookCrawler {
     const page = await browser.newPage();
 
     await page.goto('https://m.facebook.com/');
+
+    await page.click('#accept-cookie-banner-label');
     await page.focus('#m_login_email');
     await page.keyboard.type(username);
     await page.focus('#m_login_password');
@@ -397,10 +409,11 @@ class FacebookCrawler {
     //press enter
     await page.click('button[name="login"]');
 
-    setTimeout(async function () {
+    return setTimeout(async function () {
       try {
         const cookies = await page.cookies();
         await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
+        browser.close();
       } catch (e) {
         console.log('1');
         console.log(e);

@@ -5,6 +5,17 @@
         type="button"
         class="btn btn-sm"
         v-bind:class="{
+          'btn-outline-primary': !filter.children,
+          'btn-primary': filter.children,
+        }"
+        v-on:click="filter.children = !filter.children"
+      >
+        Show Child Processes
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        v-bind:class="{
           'btn-outline-primary': !filter.running,
           'btn-primary': filter.running,
         }"
@@ -56,27 +67,29 @@
         v-bind:class="job.status"
         class="tablerow"
       >
-        <td>
-          {{ ('0' + (new Date(job.timestamp).getUTCDate() + 1)).slice(-2) }}.
-          {{ '0' + (new Date(job.timestamp).getUTCMonth() + 1) }} -
-          {{ ('0' + (new Date(job.timestamp).getHours() + 1)).slice(-2) }}:{{
-            ('0' + (new Date(job.timestamp).getMinutes() + 1)).slice(-2)
-          }}
-        </td>
-        <td>{{ job.properties.type }}</td>
-        <td v-if="job.properties.identifier">
-          {{
-            job.properties.identifier
-              .replace('/story.php?story_fbid=', '')
-              .replace(
-                '&fs=0&focus_composer=0&__tn__=S%2AW-R&fs=0&focus_composer=0',
-                ''
-              )
-              .replace(/&id=[0-9]*[0-9]+/g, '')
-          }}
-        </td>
-        <td>{{ job.status }}</td>
-        <td>{{ job.properties.parent }}</td>
+        <template v-if="!job.properties.parent||filter.children">
+          <td>
+            {{ ('0' + (new Date(job.timestamp).getUTCDate() + 1)).slice(-2) }}.
+            {{ '0' + (new Date(job.timestamp).getUTCMonth() + 1) }} -
+            {{ ('0' + (new Date(job.timestamp).getHours() + 1)).slice(-2) }}:{{
+              ('0' + (new Date(job.timestamp).getMinutes() + 1)).slice(-2)
+            }}
+          </td>
+          <td>{{ job.properties.type }}</td>
+          <td v-if="job.properties.identifier">
+            {{
+              job.properties.identifier
+                .replace('/story.php?story_fbid=', '')
+                .replace(
+                  '&fs=0&focus_composer=0&__tn__=S%2AW-R&fs=0&focus_composer=0',
+                  ''
+                )
+                .replace(/&id=[0-9]*[0-9]+/g, '')
+            }}
+          </td>
+          <td>{{ job.status }}</td>
+          <td>{{ job.properties.parent }}</td>
+        </template>
       </tr>
     </table>
   </div>
@@ -92,12 +105,13 @@ export default {
       running: true,
       quoed: true,
       done: false,
+      children:false
     },
   }),
   methods: {
     getJobs: function () {
       axios
-        .get(process.env.VUE_APP_API_BASE_URL+'/jobs')
+        .get(process.env.VUE_APP_API_BASE_URL + '/jobs')
         .then((response) => (this.jobs = response));
     },
   },
