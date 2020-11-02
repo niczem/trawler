@@ -9,6 +9,7 @@
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
+    "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt"
   },
   "dependencies": {
     "axios": "^0.19.2",
