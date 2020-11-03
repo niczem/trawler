@@ -12,19 +12,7 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'google_dork',
-        fields: [
-          {
-            name: 'query',
-            title: 'Query',
-            type: 'text',
-          },
-          {
-            name: 'limit',
-            title: 'Limit',
-            type: 'number',
-            step: 1,
-          },
-        ],
+        
         method: function (job, db) {
           let output_file;
           if (job.properties.filename) output_file = job.properties.filename;

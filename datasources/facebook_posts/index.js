@@ -429,28 +429,6 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'facebook_posts',
-        fields: [
-          {
-            name: 'identifier',
-            title: 'identifier',
-            type: 'text',
-          },
-          {
-            name: 'limit',
-            title: 'Limit',
-            type: 'number',
-            step: 1,
-          },
-          {
-            name: 'engine_working',
-            title: 'Continue crawl with children(reactions, posts)',
-            type: 'select',
-            options: {
-              true: 'yes',
-              false: 'no',
-            },
-          },
-        ],
         method: function (job, db) {
           let crawler = new FacebookCrawler();
           let database_name = '';

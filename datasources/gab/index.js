@@ -239,28 +239,6 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'gab_user_posts',
-        fields: [
-          {
-            name: 'identifier',
-            title: 'identifier',
-            type: 'text',
-          },
-          {
-            name: 'limit',
-            title: 'Limit',
-            type: 'number',
-            step: 1,
-          },
-          {
-            name: 'continue',
-            title: 'Continue crawl with children(reactions, posts)',
-            type: 'select',
-            options: {
-              true: 'yes',
-              false: 'no',
-            },
-          },
-        ],
         method: function (job, db) {
           let crawler = new GabCrawler();
           let database_name = '';
