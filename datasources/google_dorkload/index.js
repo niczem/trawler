@@ -12,7 +12,7 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'google_dork',
-        
+
         method: function (job, db) {
           let output_file;
           if (job.properties.filename) output_file = job.properties.filename;

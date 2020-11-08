@@ -67,7 +67,7 @@
         v-bind:class="job.status"
         class="tablerow"
       >
-        <template v-if="!job.properties.parent||filter.children">
+        <template v-if="!job.properties.parent || filter.children">
           <td>
             {{ ('0' + (new Date(job.timestamp).getUTCDate() + 1)).slice(-2) }}.
             {{ '0' + (new Date(job.timestamp).getUTCMonth() + 1) }} -
@@ -105,7 +105,7 @@ export default {
       running: true,
       quoed: true,
       done: false,
-      children:false
+      children: false,
     },
   }),
   methods: {
