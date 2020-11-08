@@ -6,6 +6,7 @@ const fs = require('fs')
 const SQL = require('./SQL.js');
 
 const axios = require('axios');
+require('dotenv').config();
 
 
 
@@ -51,7 +52,7 @@ module.exports = class Worker {
     //loads datasources
     loadDatasources(){
       let config = {
-        datasources:['google_dorkload','facebook_posts','gab','onionlist','tiktok']
+        datasources:JSON.parse(process.env.datasources)
       }
       let datasources = []
       for(let i in config.datasources){
