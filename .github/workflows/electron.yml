@@ -1,0 +1,37 @@
+name: Electron
+
+on: push
+
+stages:
+  - build
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - cp -r packages/app/desktop/build/installers/* .public
+    - mv .public public
+  dependencies:
+    - build
+  artifacts:
+    paths:
+      - public/*-mac.zip
+      - public/*.exe
+  only:
+    - master
+
+build:
+  image: 4tqrgqe5yrgfd/electron
+  stage: build
+  script:
+    - cd packages/app/desktop/
+    - npm i
+    - npm run pack
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - packages/app/desktop/build/installers/*-mac.zip
+      - packages/app/desktop/build/installers/*.exe
+  only:
+    - electron
