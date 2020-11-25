@@ -1,5 +1,5 @@
 {
-  "name": "dashboard",
+  "name": "trawler",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt",
-    "postinstall": "mkdir data&&touch data/db.json && electron-builder install-app-deps",
+    "postinstall": "mkdir -p data&&cp -n .templates/db.template.json data/db.json && electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
