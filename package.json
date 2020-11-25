@@ -15,7 +15,7 @@
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest"
   },
-  "main": "background.js",
+  "main": "src/background.js",
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap-icons": "^1.0.0",
