@@ -18,4 +18,4 @@ template=`cat README.template.md`
 
 readme="${template/INCLUDE_DATASOURCES_STRING/"$markdown"}"    
 
-echo "$readme" > ../readme.md
+echo "$readme" > ../README.md
