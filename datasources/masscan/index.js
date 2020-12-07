@@ -26,8 +26,15 @@ module.exports = class Datasource extends Worker {
           console.log(
             `docker run ilyaglow/masscan -p${job.properties.ports} ${job.properties.ips} `
           );
+
+          const filename = path.resolve(
+            __dirname,
+            '../../data/' + job.id + '.list'
+          );
+          Fs.writeFileSync(filename);
+
           self.runShellCommand(
-            `docker run ilyaglow/masscan -p${job.properties.ports} ${job.properties.ips} -oJ lol.json`,
+            `docker run ilyaglow/masscan -p${job.properties.ports} ${job.properties.ips} > ${filename}`,
             job.id,
             (res) => {
               console.log(res);
