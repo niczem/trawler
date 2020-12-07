@@ -26,7 +26,6 @@ module.exports = class Datasource extends Worker {
           console.log(
             `docker run ilyaglow/masscan -p${job.properties.ports} ${job.properties.ips} `
           );
-
           const filename = path.resolve(
             __dirname,
             '../../data/' + job.id + '.list'
