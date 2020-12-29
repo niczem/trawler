@@ -1,5 +1,5 @@
 {
-  "name": "dashboard",
+  "name": "trawler",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,6 +7,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "dev": "NODE_ENV=DEV vue-cli-service serve & sleep 5 && NODE_ENV=DEV electron app.js",
+    "electron": "electron app.js",
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
@@ -19,6 +21,7 @@
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
+    "electron": "^11.1.1",
     "ffmpeg": "0.0.4",
     "lowdb": "^1.0.0",
     "node-stream-zip": "^1.11.4",
