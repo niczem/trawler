@@ -50,6 +50,7 @@ class onionlistCrawler {
 
   async takeScreenShot(url, path) {
     const browser = await puppeteer.launch({
+      headless: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -60,7 +61,7 @@ class onionlistCrawler {
     try {
       await page.goto(url, { waitUntil: 'networkidle0', timeout: 10000 });
 
-      await page.setViewport({ width: 1024, height: 800 });
+      await page.setViewport({ width: 1600, height: 1600 });
       await page.screenshot({
         path: path + '/' + url.replace(/[^\w\s]/gi, '') + '.png',
         fullPage: true,
@@ -205,29 +206,56 @@ module.exports = class Datasource extends Worker {
                 console.log('done');
               }
 
-              console.log('zip screenshot dir');
-              await self.zipDir(download_path, download_path + '.zip', job.id);
-              console.log('zipping done..');
+              let gif_move_and_compress =
+                'convert -gravity North -extent 1600x1600 -background white -delay 150 -loop 0 ' +
+                download_path +
+                '/*.png ' +
+                download_path +
+                '/animation.gif&&mogrify -format jpg ' +
+                download_path +
+                '/*.png&&rm -f ' +
+                download_path +
+                '/*.png&&mv ' +
+                download_path +
+                '/animation.gif ' +
+                download_path +
+                '/../' +
+                job.id +
+                '.gif';
+              console.log('create gif');
+              self.runShellCommand(
+                gif_move_and_compress,
+                job.id,
+                async function () {
+                  console.log('zip screenshot dir');
+                  await self.zipDir(
+                    download_path,
+                    download_path + '.zip',
+                    job.id
+                  );
+                  console.log('zipping done..');
 
-              console.log('delete directory...');
-              rimraf.sync(download_path);
+                  console.log('delete directory...');
+                  rimraf.sync(download_path);
 
-              //convert -resize 1024x1024 -delay 1 -loop 0 *.png animation.gif
+                  //convert -resize 1024x1024 -delay 1 -loop 0 *.png animation.gif
 
-              fs.writeFile(
-                path.resolve(__dirname, '../../data/' + job.id + '.json'),
-                JSON.stringify({ data: posts }, null, 2),
-                function (err) {
-                  if (err) return console.log(err);
+                  fs.writeFile(
+                    path.resolve(__dirname, '../../data/' + job.id + '.json'),
+                    JSON.stringify({ data: posts }, null, 2),
+                    function (err) {
+                      if (err) return console.log(err);
+                    }
+                  );
+                  //console.log(objectArrayToCSV({data:posts[0]}));
+                  //update job
+                  db.read()
+                    .get('jobs')
+                    .find({ id: job.id })
+                    .assign({ status: 'done' })
+                    .write();
                 }
               );
-              //console.log(objectArrayToCSV({data:posts[0]}));
-              //update job
-              db.read()
-                .get('jobs')
-                .find({ id: job.id })
-                .assign({ status: 'done' })
-                .write();
             }
           );
         },
