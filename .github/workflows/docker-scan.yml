@@ -1,2 +1,0 @@
-- name: Container image scan
-  uses: Azure/container-scan@v0
