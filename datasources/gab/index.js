@@ -1,6 +1,6 @@
 /**
- * @file **gab (nazi-twitter)** crawl posts for user 
-*/
+ * @file **gab (nazi-twitter)** crawl posts for user
+ */
 const path = require('path');
 
 const axios = require('axios');

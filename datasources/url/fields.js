@@ -12,7 +12,7 @@ module.exports = [
         title: 'Type',
         type: 'select',
         options: {
-          1: 'json'
+          1: 'json',
         },
       },
       {
@@ -26,24 +26,25 @@ module.exports = [
         type: 'select',
         options: {
           true: 'yes',
-          false: 'no'
+          false: 'no',
         },
       },
-        {
-          name: 'pagination_min',
-          title: 'Pagination Minimum (usually 0 or 1)',
-          type: 'number',
-        },
-        {
-          name: 'pagination_max',
-          title: 'Pagination Maximum',
-          type: 'number',
-        },
-        {
-          name: 'result_index',
-          title: 'Result Index (array index or object index in which the results are stored)',
-          type: 'text',
-        }
+      {
+        name: 'pagination_min',
+        title: 'Pagination Minimum (usually 0 or 1)',
+        type: 'number',
+      },
+      {
+        name: 'pagination_max',
+        title: 'Pagination Maximum',
+        type: 'number',
+      },
+      {
+        name: 'result_index',
+        title:
+          'Result Index (array index or object index in which the results are stored)',
+        type: 'text',
+      },
     ],
   },
 ];
