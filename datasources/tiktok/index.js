@@ -1,6 +1,6 @@
 /**
  * @file **tiktok** get video metadata per hashtag, download them and analyse the text using easyOCR
-*/
+ */
 
 const path = require('path');
 const Fs = require('fs');

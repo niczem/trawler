@@ -1,6 +1,6 @@
 /**
  * @file **onionlist** download tor-catalogue from onionlist.org
-*/
+ */
 const path = require('path');
 
 const Worker = require(path.resolve(__dirname, '../../utils/worker.js'));
