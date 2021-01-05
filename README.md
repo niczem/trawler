@@ -27,6 +27,8 @@ Curently the following datasources are implemented:
    download tor-catalogue from onionlist.org
    - **tiktok**
    get video metadata per hashtag, download them and analyse the text using easyOCR
+   - **url**
+   generic http scraper 
 
 
 ## Features

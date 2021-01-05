@@ -1,3 +1,7 @@
+/**
+ * @file **url** generic http scraper 
+*/
+
 const path = require('path');
 
 const Worker = require(path.resolve(__dirname, '../../utils/worker.js'));
