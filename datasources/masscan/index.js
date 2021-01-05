@@ -1,3 +1,7 @@
+/**
+ * @file **masscan** udp based port scanner (requires docker)
+ */
+
 const path = require('path');
 
 const Worker = require(path.resolve(__dirname, '../../utils/worker.js'));

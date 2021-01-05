@@ -1,3 +1,6 @@
+/**
+ * @file **google dorking** find interesting files and download them 
+*/
 const path = require('path');
 const Worker = require(path.resolve(__dirname, '../../utils/worker.js'));
 require('dotenv').config();
