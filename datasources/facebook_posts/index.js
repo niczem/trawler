@@ -1,3 +1,6 @@
+/**
+ * @file **facebook posts and reactions** scrape facebook posts, comments and reactions (like, heart, etc)
+ */
 const path = require('path');
 const Worker = require(path.resolve(__dirname, '../../utils/worker.js'));
 

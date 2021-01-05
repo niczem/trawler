@@ -14,19 +14,7 @@ A job scheduler and analysis tool for webscraping (and other) tasks.
 ## Datasources
 Curently the following datasources are implemented:
 
-
-   - **facebook posts and reactions**
-   scrape facebook posts, comments and reactions (like, heart, etc)
-   - **gab (nazi-twitter)**
-   crawl posts for user 
-   - **google dorking**
-   find interesting files and download them 
-   - **masscan**
-   udp based port scanner (requires docker)
-   - **onionlist**
-   download tor-catalogue from onionlist.org
-   - **tiktok**
-   get video metadata per hashtag, download them and analyse the text using easyOCR
+INCLUDE_DATASOURCES_STRING
 
 
 ## Features
