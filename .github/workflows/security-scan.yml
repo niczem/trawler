@@ -2,7 +2,13 @@ name: Security Scan
 
 on: push
 jobs:
-  docker:
+  build-secure-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: Azure/container-scan@v0
+    - uses: actions/checkout@master
+    - run: npm i&&npm run build
+    - run: docker build . -t trwaler:${{ github.sha }}
+      
+    - uses: Azure/container-scan@v0
+      with:
+        image-name: trawler:${{ github.sha }}
