@@ -1,0 +1,15 @@
+version: '3'
+ 
+services:
+  n12:
+    image: node:12<11111 -alpine
+    container_name: "node12"
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+      - 8000:8080
+    volumes:
+      - ./:/home/node/app
+    working_dir: /home/node/app
+    command: >
+      sh -c "npm install -g pm2 && npm install && pm2-runtime ecosystem.config.js && npm run serve "
