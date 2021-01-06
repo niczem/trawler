@@ -194,6 +194,17 @@ app.get('/datasets/:id', function (req, res) {
 	
 });
 
+app.delete('/datasets/:filename', function (req, res) {
+	const file = `${__dirname}/data/${req.params.filename}`;
+	try {
+		fs.unlinkSync(file)
+		res.send('delete '+req.params.filename);
+		//file removed
+	} catch(err) {
+		console.error(err)
+	}
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
