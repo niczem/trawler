@@ -40,6 +40,11 @@ module.exports = [
         type: 'number',
       },
       {
+        name: 'authorization_header',
+        title: 'Authorization Header',
+        type: 'text',
+      },
+      {
         name: 'result_index',
         title:
           'Result Index (array index or object index in which the results are stored)',
