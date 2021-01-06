@@ -29,31 +29,29 @@ module.exports = class Datasource extends Worker {
         method: function (job, db) {
           let run = async function (url, cb) {
             let results = [];
-            let i = job.properties.pagination_min||0;
-            let pagination_max = parseInt(job.properties.pagination_max)||1;
+            let i = job.properties.pagination_min || 0;
+            let pagination_max = parseInt(job.properties.pagination_max) || 1;
             let result_length = 0;
             let headers = {};
-            if(job.properties.authorization_header){
-                headers={
-                  'Authorization': job.properties.authorization_header 
-                } 
+            if (job.properties.authorization_header) {
+              headers = {
+                Authorization: job.properties.authorization_header,
+              };
             }
             while (i <= pagination_max) {
-              
               url = job.properties.url.replace('%%%page%%%', i);
 
               let response;
-              try{
-                response = await axios.get(url,{headers});
-              }catch(e){
+              try {
+                response = await axios.get(url, { headers });
+              } catch (e) {
                 console.log('error fetching url');
               }
               //@sec this feels terribly wrong
               let data_obj;
-              if(job.properties.result_index)
+              if (job.properties.result_index)
                 eval('data_obj = response.data.' + job.properties.result_index);
-              else
-                data_obj = response.data;
+              else data_obj = response.data;
 
               console.log('page ', i);
 
