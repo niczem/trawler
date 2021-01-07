@@ -1,6 +1,7 @@
 <template>
   <form v-on:submit.prevent="createJob">
-    <PropsForm v-on:changeType="changeType" v-on:changeProperties="changeProperties"></PropsForm>
+    <h3>Start Crawl</h3>
+    <PropsForm v-on:changeType="changeType" v-on:changeProperties="changeProperties" v-on:changeChildProperties="changeChildProperties"></PropsForm>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </template>
@@ -31,6 +32,7 @@ export default {
       alert('asd');
       const { value } = event.target;
       this.type = value;
+      this.properties.type = this.type;
     },
     changeMeta:function(meta){
       this.continue_with_job = meta.continue_with_job;
@@ -39,6 +41,11 @@ export default {
     },
     changeProperties: function(properties) {
       this.properties = properties;
+    },
+    changeChildProperties:function(childProperties){
+      console.log('child properties changed');
+      this.properties.continue_with_job = childProperties;
+      console.log(this.properties);
     },
     createJob: function () {
       this.properties.type = this.type;

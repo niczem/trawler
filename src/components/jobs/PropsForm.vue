@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Start Crawl</h3>
+    <h4 v-if="isChild">Configure follow up job:</h4>
     <div class="form-group">
       <label for="type">choose type</label>
       <select class="form-control" id="type" v-model="type" v-on:change="(event) => this.$emit('changeType',event)">
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="form-check" v-if="type">
+    <div class="form-check" v-if="type&&!isChild">
       <input
         type="checkbox"
         class="form-check-input"
@@ -63,7 +63,7 @@
       >
     </div>
 
-    <div class="form-check" v-if="type">
+    <div class="form-check" v-if="type&&!isChild">
       <input
         type="checkbox"
         v-model="schedule.repeat"
@@ -84,21 +84,8 @@
       />
     </div>
 
-    <div class="form-group" v-if="type">
-      <label for="type">continue with action</label>
-      <select class="form-control" id="type" v-model="continue_with_job">
-        <option
-          v-for="datasource in datasources"
-          v-bind:key="datasource.identifier"
-        >
-          {{ datasource.identifier }}
-        </option>
-      </select>
-    </div>
-
-
     <!-- schedule start -->
-    <div class="form-check" v-if="type">
+    <div class="form-check" v-if="type&&!isChild">
       <input
         type="checkbox"
         v-model="schedule.active"
@@ -167,26 +154,55 @@
       </div>
     </div>
     <!-- schedule stop -->
+    <div class="form-check" v-if="type">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="continuteWithJob"
+        value="1"
+        v-model="continue_with_job"
+      />
+      <label class="form-check-label" for="continuteWithJob"
+        >continue with job (output_file of current job will be input_file of follow up job)</label
+      >
+    </div>
+    <PropsForm isChild="true" v-if="continue_with_job" v-on:changeChildProperties="changeChildProperties"></PropsForm>
   </div>
 </template>
 
 <script>
 
+import PropsForm from './PropsForm.vue';
 import Fields from '../../../utils/Fields.js';
 
 export default {
   name: 'PropsForm',
   data: () => ({
     type: null,
-    continue_with_job: null,
+    continue_with_job: false,
     continueCrawl: 0,
     datasources: [],
     properties: {},
     schedule: { active: false },
   }),
+  props: ['isChild'],
   methods: {
+    //this function is used to reach through properties to parent job
+    changeChildProperties:function(child_properties){
+        if(!this.isChild)
+            this.$emit('changeChildProperties', child_properties);
+        else{
+            this.properties.continue_with_job = child_properties;
+            this.$emit('changeChildProperties', this.properties);
+        }
+
+    },
     changeProperties: function() {
-        this.$emit('changeProperties', this.properties);
+        this.properties.type = this.type;
+        if(this.isChild)
+            this.$emit('changeChildProperties', this.properties);
+        else
+            this.$emit('changeProperties', this.properties);
     },
     changeMeta: function() {
         this.$emit('changeMeta', {
