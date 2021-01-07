@@ -23,24 +23,38 @@ const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 module.exports = class Datasource extends Worker {
   getMethods() {
     let self = this;
-
     return [
       {
         identifier: 'url',
         method: function (job, db, final_cb) {
           let run = async function (url, cb) {
             let results = [];
-            let i = job.properties.pagination_min;
+            let i = job.properties.pagination_min || 0;
+            let pagination_max = parseInt(job.properties.pagination_max) || 1;
             let result_length = 0;
-            while (i <= parseInt(job.properties.pagination_max)) {
+            let headers = {};
+            if (job.properties.authorization_header) {
+              headers = {
+                Authorization: job.properties.authorization_header,
+              };
+            }
+            while (i <= pagination_max) {
               url = job.properties.url.replace('%%%page%%%', i);
-              console.log(i, url, job.properties.result_index);
-              let response = await axios.get(url);
+
+              let response;
+              try {
+                response = await axios.get(url, { headers });
+              } catch (e) {
+                console.log('error fetching url');
+              }
               //@sec this feels terribly wrong
               let data_obj;
-              eval('data_obj = response.data.' + job.properties.result_index);
+              if (job.properties.result_index)
+                eval('data_obj = response.data.' + job.properties.result_index);
+              else data_obj = response.data;
+
               console.log('page ', i);
-              console.log(data_obj);
+
               if (job.properties.result_is_array == 'true')
                 results = results.concat(data_obj);
               else results.push(data_obj);
@@ -80,7 +94,6 @@ module.exports = class Datasource extends Worker {
 
             final_cb();
           });
-
         },
       },
     ];
