@@ -54,12 +54,14 @@ app.post('/jobs', function(req, res){
 
 	let time = new Date().getTime();
 
-
 	if(!req.body.properties.identifier)
 		req.body.properties.identifier = req.body.properties.query
 	if(!req.body.properties.identifier)
 		req.body.properties.identifier = req.body.properties.category.replace('/','-');
 
+
+	if(!req.body.properties.continue_with_job)
+		req.body.properties.continue_with_job = false;
 
 	const job = {
 	  "id": `${time}_${req.body.type}_${req.body.properties.identifier}`,
