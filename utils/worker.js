@@ -189,7 +189,7 @@ module.exports = class Worker {
 
         let datasources = this.loadDatasources();
 
-
+        let self = this;
         //loop through loaded datasources
         for(let i in datasources){
           //loop through datasource methods
@@ -199,7 +199,19 @@ module.exports = class Worker {
             //run method if it matches the method in the identifier
             if(datasources[i][n].identifier === job.properties.type){
 
-              datasources[i][n].method(job,this.db);
+              datasources[i][n].method(job,this.db,function(){
+                //callback after function ends.
+                //NEEDS TO BE IMPLEMENTED IN JOB METHOD!!!
+                if(job.properties.continue_with_job){
+
+                  
+                  job.properties.continue_with_job.parent=job.id
+                  job.properties.continue_with_job.input_files=job.output_files;
+                  job.properties.continue_with_job
+                  self.addJob(job.properties.continue_with_job,'quoed');
+                }
+                
+              });
             }
 
           }

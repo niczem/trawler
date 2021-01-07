@@ -3,7 +3,7 @@
     <h4 v-if="isChild">Configure follow up job:</h4>
     <div class="form-group">
       <label for="type">choose type</label>
-      <select class="form-control" id="type" v-model="type" v-on:change="(event) => this.$emit('changeType',event)">
+      <select class="form-control" id="type" v-model="type" v-on:change="changeType">
         <option
           v-for="datasource in datasources"
           v-bind:key="datasource.identifier"
@@ -29,6 +29,7 @@
             :placeholder="field.title"
             :type="field.type"
             :step="field.step"
+            v-on:change="changeProperties()"
             class="form-control"
           />
           <select
@@ -196,6 +197,9 @@ export default {
             this.$emit('changeChildProperties', this.properties);
         }
 
+    },
+    changeType:function(){
+        this.$emit('changeType',this.type)
     },
     changeProperties: function() {
         this.properties.type = this.type;

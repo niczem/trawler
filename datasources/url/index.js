@@ -27,7 +27,7 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'url',
-        method: function (job, db) {
+        method: function (job, db, final_cb) {
           let run = async function (url, cb) {
             let results = [];
             let i = job.properties.pagination_min;
@@ -70,13 +70,17 @@ module.exports = class Datasource extends Worker {
                 }
               );
             }
+
+              db.read()
+              .get('jobs')
+              .find({ id: job.id })
+              .assign({ status: 'done' })
+              .assign({ output_files: {json:job.id + '.json'} })
+              .write();
+
+            final_cb();
           });
 
-          db.read()
-            .get('jobs')
-            .find({ id: job.id })
-            .assign({ status: 'done' })
-            .write();
         },
       },
     ];

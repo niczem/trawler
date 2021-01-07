@@ -28,9 +28,7 @@ export default {
     schedule: { active: false },
   }),
   methods: {
-    changeType:function(event){
-      alert('asd');
-      const { value } = event.target;
+    changeType:function(value){
       this.type = value;
       this.properties.type = this.type;
     },

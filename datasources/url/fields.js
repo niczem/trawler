@@ -8,7 +8,7 @@ module.exports = [
         type: 'text',
       },
       {
-        name: 'type',
+        name: 'result_type',
         title: 'Type',
         type: 'select',
         options: {
