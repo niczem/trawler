@@ -51,7 +51,7 @@ module.exports = [
         options: {
           true: 'yes',
           false: 'no',
-        }
+        },
       },
       {
         name: 'result_index',

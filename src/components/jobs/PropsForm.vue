@@ -3,7 +3,12 @@
     <h4 v-if="isChild">Configure follow up job:</h4>
     <div class="form-group">
       <label for="type">choose type</label>
-      <select class="form-control" id="type" v-model="type" v-on:change="changeType">
+      <select
+        class="form-control"
+        id="type"
+        v-model="type"
+        v-on:change="changeType"
+      >
         <option
           v-for="datasource in datasources"
           v-bind:key="datasource.identifier"
@@ -35,7 +40,6 @@
           <select
             v-if="field.type == 'select'"
             v-on:change="changeProperties()"
-
             v-model="properties[field.name]"
             class="form-control"
           >
@@ -50,7 +54,7 @@
         </div>
       </div>
     </div>
-    <div class="form-check" v-if="type&&!isChild">
+    <div class="form-check" v-if="type && !isChild">
       <input
         type="checkbox"
         class="form-check-input"
@@ -64,7 +68,7 @@
       >
     </div>
 
-    <div class="form-check" v-if="type&&!isChild">
+    <div class="form-check" v-if="type && !isChild">
       <input
         type="checkbox"
         v-model="schedule.repeat"
@@ -86,7 +90,7 @@
     </div>
 
     <!-- schedule start -->
-    <div class="form-check" v-if="type&&!isChild">
+    <div class="form-check" v-if="type && !isChild">
       <input
         type="checkbox"
         v-model="schedule.active"
@@ -164,15 +168,19 @@
         v-model="continue_with_job"
       />
       <label class="form-check-label" for="continuteWithJob"
-        >continue with job (output_file of current job will be input_file of follow up job)</label
+        >continue with job (output_file of current job will be input_file of
+        follow up job)</label
       >
     </div>
-    <PropsForm isChild="true" v-if="continue_with_job" v-on:changeChildProperties="changeChildProperties"></PropsForm>
+    <PropsForm
+      isChild="true"
+      v-if="continue_with_job"
+      v-on:changeChildProperties="changeChildProperties"
+    ></PropsForm>
   </div>
 </template>
 
 <script>
-
 import PropsForm from './PropsForm.vue';
 import Fields from '../../../utils/Fields.js';
 
@@ -189,31 +197,27 @@ export default {
   props: ['isChild'],
   methods: {
     //this function is used to reach through properties to parent job
-    changeChildProperties:function(child_properties){
-        if(!this.isChild)
-            this.$emit('changeChildProperties', child_properties);
-        else{
-            this.properties.continue_with_job = child_properties;
-            this.$emit('changeChildProperties', this.properties);
-        }
-
+    changeChildProperties: function (child_properties) {
+      if (!this.isChild) this.$emit('changeChildProperties', child_properties);
+      else {
+        this.properties.continue_with_job = child_properties;
+        this.$emit('changeChildProperties', this.properties);
+      }
     },
-    changeType:function(){
-        this.$emit('changeType',this.type)
+    changeType: function () {
+      this.$emit('changeType', this.type);
     },
-    changeProperties: function() {
-        this.properties.type = this.type;
-        if(this.isChild)
-            this.$emit('changeChildProperties', this.properties);
-        else
-            this.$emit('changeProperties', this.properties);
+    changeProperties: function () {
+      this.properties.type = this.type;
+      if (this.isChild) this.$emit('changeChildProperties', this.properties);
+      else this.$emit('changeProperties', this.properties);
     },
-    changeMeta: function() {
-        this.$emit('changeMeta', {
-            continue_with_job:this.continue_with_job,
-            continueCrawl:this.continueCrawl,
-            schedule:this.schedule
-            });
+    changeMeta: function () {
+      this.$emit('changeMeta', {
+        continue_with_job: this.continue_with_job,
+        continueCrawl: this.continueCrawl,
+        schedule: this.schedule,
+      });
     },
   },
   mounted: function () {

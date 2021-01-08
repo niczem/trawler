@@ -1,7 +1,11 @@
 <template>
   <form v-on:submit.prevent="createJob">
     <h3>Start Crawl</h3>
-    <PropsForm v-on:changeType="changeType" v-on:changeProperties="changeProperties" v-on:changeChildProperties="changeChildProperties"></PropsForm>
+    <PropsForm
+      v-on:changeType="changeType"
+      v-on:changeProperties="changeProperties"
+      v-on:changeChildProperties="changeChildProperties"
+    ></PropsForm>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </template>
@@ -28,19 +32,19 @@ export default {
     schedule: { active: false },
   }),
   methods: {
-    changeType:function(value){
+    changeType: function (value) {
       this.type = value;
       this.properties.type = this.type;
     },
-    changeMeta:function(meta){
+    changeMeta: function (meta) {
       this.continue_with_job = meta.continue_with_job;
       this.continueCrawl = meta.continueCrawl;
       this.schedule = meta.schedule;
     },
-    changeProperties: function(properties) {
+    changeProperties: function (properties) {
       this.properties = properties;
     },
-    changeChildProperties:function(childProperties){
+    changeChildProperties: function (childProperties) {
       console.log('child properties changed');
       this.properties.continue_with_job = childProperties;
       console.log(this.properties);
