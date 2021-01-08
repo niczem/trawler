@@ -22,7 +22,7 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'json_to_csv',
-        method: function (job, db) {
+        method: function (job, db,final_cb) {
           let run = async function (json_file, cb) {
 
             console.log('convert file now', job);
@@ -35,6 +35,7 @@ module.exports = class Datasource extends Worker {
                 csv,
                 function (err) {
                   if (err) return console.log(err);
+                  cb()
                 })
               }, {})
           };
@@ -51,9 +52,8 @@ module.exports = class Datasource extends Worker {
                 }
               );*/
             }
-          });
 
-          db.read()
+            db.read()
             .get('jobs')
             .find({ id: job.id })
             .assign({ status: 'done' })
@@ -61,6 +61,10 @@ module.exports = class Datasource extends Worker {
               csv:job.id + '.csv'
             } })
             .write();
+
+            final_cb();
+          });
+
         },
       },
     ];

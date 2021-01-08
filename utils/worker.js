@@ -199,12 +199,14 @@ module.exports = class Worker {
             //run method if it matches the method in the identifier
             if(datasources[i][n].identifier === job.properties.type){
 
-              datasources[i][n].method(job,this.db,function(){
+              datasources[i][n].method(job,this.db,async function(){
                 //callback after function ends.
                 //NEEDS TO BE IMPLEMENTED IN JOB METHOD!!!
                 if(job.properties.continue_with_job){
 
-                  
+                  //get job obj again after output files have been added
+                  job = await self.getJob(job.id);
+                  console.log('got job 2nd time',job);
                   job.properties.continue_with_job.parent=job.id
                   job.properties.continue_with_job.input_files=job.output_files;
                   job.properties.continue_with_job

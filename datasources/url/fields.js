@@ -45,6 +45,15 @@ module.exports = [
         type: 'text',
       },
       {
+        name: 'result_is_array',
+        title: 'Result is array (paginated results will be merged)',
+        type: 'select',
+        options: {
+          true: 'yes',
+          false: 'no',
+        }
+      },
+      {
         name: 'result_index',
         title:
           'Result Index (array index or object index in which the results are stored)',

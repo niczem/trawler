@@ -29,7 +29,7 @@ module.exports = class Datasource extends Worker {
         method: function (job, db, final_cb) {
           let run = async function (url, cb) {
             let results = [];
-            let i = job.properties.pagination_min || 0;
+            let i = job.properties.pagination_min || 1;
             let pagination_max = parseInt(job.properties.pagination_max) || 1;
             let result_length = 0;
             let headers = {};
