@@ -26,10 +26,10 @@ module.exports = class Datasource extends Worker {
     return [
       {
         identifier: 'url',
-        method: function (job, db) {
+        method: function (job, db, final_cb) {
           let run = async function (url, cb) {
             let results = [];
-            let i = job.properties.pagination_min || 0;
+            let i = job.properties.pagination_min || 1;
             let pagination_max = parseInt(job.properties.pagination_max) || 1;
             let result_length = 0;
             let headers = {};
@@ -84,14 +84,16 @@ module.exports = class Datasource extends Worker {
                 }
               );
             }
-          });
 
-          db.read()
-            .get('jobs')
-            .find({ id: job.id })
-            .assign({ output_file: job.id + '.json' })
-            .assign({ status: 'done' })
-            .write();
+            db.read()
+              .get('jobs')
+              .find({ id: job.id })
+              .assign({ status: 'done' })
+              .assign({ output_files: { json: job.id + '.json' } })
+              .write();
+
+            final_cb();
+          });
         },
       },
     ];
