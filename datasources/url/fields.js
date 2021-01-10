@@ -8,7 +8,7 @@ module.exports = [
         type: 'text',
       },
       {
-        name: 'type',
+        name: 'result_type',
         title: 'Type',
         type: 'select',
         options: {
@@ -43,6 +43,15 @@ module.exports = [
         name: 'authorization_header',
         title: 'Authorization Header',
         type: 'text',
+      },
+      {
+        name: 'result_is_array',
+        title: 'Result is array (paginated results will be merged)',
+        type: 'select',
+        options: {
+          true: 'yes',
+          false: 'no',
+        },
       },
       {
         name: 'result_index',

@@ -14,7 +14,7 @@
     "all":"pm2 start ecosystem.config.js"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap-icons": "^1.2.2",
     "cheerio": "^1.0.0-rc.5",
     "core-js": "^3.8.1",
