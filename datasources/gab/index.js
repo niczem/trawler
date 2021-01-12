@@ -66,43 +66,19 @@ class Utils {
   }
 }
 
-function objectArrayToCSV({
-  data = null,
-  columnDelimiter = ',',
-  lineDelimiter = '\n',
-}) {
-  let result, ctr, keys;
-
-  if (data === null || !data.length) {
-    return null;
-  }
-
-  keys = Object.keys(data[0]);
-
-  result = '';
-  result += keys.join(columnDelimiter);
-  result += lineDelimiter;
-
-  data.forEach((item) => {
-    ctr = 0;
-    keys.forEach((key) => {
-      if (ctr > 0) {
-        result += columnDelimiter;
-      }
-
-      result +=
-        typeof item[key] === 'string' && item[key].includes(columnDelimiter)
-          ? `"${item[key]}"`
-          : item[key];
-      ctr++;
-    });
-    result += lineDelimiter;
-  });
-
-  return result;
-}
-
 class GabCrawler {
+  async getStatusComments(status_id, callback) {
+    axios
+      .get('https://gab.com/api/v1/statuses/' + status_id + '/comments')
+      .then(
+        (response) => {
+          callback(response.data);
+        },
+        (error) => {
+          console.log('error', error);
+        }
+      );
+  }
   async getUserPosts(pagename, limit = 3, callback) {
     let self = this;
     try {
@@ -121,7 +97,7 @@ class GabCrawler {
 
       let results = [];
       await page.setRequestInterception(true);
-
+      await page.setDefaultNavigationTimeout(0);
       page.on('request', (request) => {
         try {
           request_client({
@@ -153,7 +129,16 @@ class GabCrawler {
                       loopStatuses();
                     },
                     (error) => {
-                      console.log(error);
+                      c;
+                      //cloudflare bouhu
+                      if (err.status === 520)
+                        setTimeout(function () {
+                          console.log(
+                            'cloudflare protects some nazis from you thats why you have to wait now 30 seconds to circumvent their awesome security product'
+                          );
+                          loopStatuses();
+                        }, 30000);
+                      else console.log(error);
                     }
                   );
                   let base_url = request_url.slice(0, -18);
@@ -177,7 +162,15 @@ class GabCrawler {
                             loopStatuses();
                           },
                           (error) => {
-                            console.log(error);
+                            //cloudflare bouhu
+                            if (err.status === 520)
+                              setTimeout(function () {
+                                console.log(
+                                  'cloudflare protects some nazis from you thats why you have to wait now 30 seconds to circumvent their awesome security product'
+                                );
+                                loopStatuses();
+                              }, 30000);
+                            else console.log(error);
                           }
                         );
                       }, 1500);
@@ -193,7 +186,11 @@ class GabCrawler {
               request.continue();
             })
             .catch((error) => {
-              if ((error.options.data.error = 'Trottled')) {
+              console.log(error);
+              if (
+                error.options.data &&
+                error.options.data.error == 'Trottled'
+              ) {
                 console.log('throttled');
               }
               console.log(error);
@@ -266,6 +263,16 @@ module.exports = class Datasource extends Worker {
                   console.log('Hello World > helloworld.txt');
                 }
               );
+              if (job.properties.continue)
+                for (let i in posts) {
+                  console.log(posts[i]);
+                  //add job for new post
+                  self.addJob({
+                    type: 'gab_status_comments',
+                    identifier: posts[i].id,
+                    parent: job.id,
+                  });
+                }
 
               //console.log(objectArrayToCSV({data:posts[0]}));
               //update job
@@ -273,9 +280,44 @@ module.exports = class Datasource extends Worker {
                 .get('jobs')
                 .find({ id: job.id })
                 .assign({ status: 'done' })
+                .assign({
+                  output_files: {
+                    json: job.id + '.json',
+                  },
+                })
                 .write();
             }
           );
+        },
+      },
+      {
+        identifier: 'gab_status_comments',
+        method: function (job, db) {
+          let crawler = new GabCrawler();
+          if (!job.properties.status_id)
+            job.properties.status_id = job.properties.identifier;
+          crawler.getStatusComments(job.properties.status_id, function (
+            results
+          ) {
+            fs.writeFile(
+              path.resolve(__dirname, '../../data/' + job.id + '.json'),
+              JSON.stringify({ data: results }, null, 2),
+              function (err) {
+                if (err) return console.log(err);
+              }
+            );
+            db.read()
+              .get('jobs')
+              .find({ id: job.id })
+              .assign({ status: 'done' })
+              .assign({
+                output_files: {
+                  json: job.id + '.json',
+                },
+              })
+              .write();
+            console.log('done collecting comments');
+          });
         },
       },
     ];
