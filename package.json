@@ -11,7 +11,7 @@
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
     "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt",
-    "all":"pm2 start ecosystem.config.js"
+    "all": "pm2 start ecosystem.config.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -25,6 +25,7 @@
     "lowdb": "^1.0.0",
     "node-stream-zip": "^1.11.4",
     "nodemailer": "^6.4.17",
+    "pm2": "^4.5.1",
     "puppeteer": "^5.5.0",
     "sequelize": "^5.22.3",
     "sqlite-to-json": "^0.1.3",
