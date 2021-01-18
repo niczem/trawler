@@ -10,15 +10,8 @@ require('dotenv').config();
 
 let data_dir = process.env.data_dir;
 
-const fs = require('fs').promises;
-const Fs = require('fs');
-
-const puppeteer = require('puppeteer');
-const rimraf = require('rimraf');
-
-const cheerio = require('cheerio'),
+const fs = require('fs').promises,
   axios = require('axios');
-const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 
 module.exports = class Datasource extends Worker {
   getMethods() {
@@ -53,18 +46,19 @@ module.exports = class Datasource extends Worker {
                 eval('data_obj = response.data.' + job.properties.result_index);
               else data_obj = response.data;
 
-              console.log('page ', i);
+              console.log('continue with page ', i);
 
-              if (job.properties.result_is_array == 'true')
+              if (job.properties.result_is_array == 'yes')
                 results = results.concat(data_obj);
               else results.push(data_obj);
 
               console.log(results.length);
               if (results.length > result_length) {
-                console.log('wouhuhu number of results increased');
+                console.log('number of results increased, continue crawling');
               } else {
+                console.log('results do not increase anymore, stop crawling');
                 //cancel loop if number didn't increase
-                job.properties.pagination_max = i;
+                i = job.properties.pagination_max;
               }
               result_length = results.length;
               i++;
