@@ -12,10 +12,18 @@ A job scheduler and analysis tool for webscraping (and other) tasks.
 ![Node.js Package](https://github.com/niczem/trawler/workflows/Node.js%20Package/badge.svg)
 
 ## Datasources
+   
+
 Curently the following datasources are implemented:
 
 INCLUDE_DATASOURCES_STRING
 
+### Create your own datasource
+    - copy template dir in ./jobs
+    - define fields in fields.js which are needed to start the job
+    - a job can output one or multiple files
+    - no directories should be used, please use archives
+    - use job_id.ext (eg job_id.json) as filename
 
 ## Features
 - simple configuration of actions/datasources, also from 3rd party modules/repos
@@ -37,12 +45,12 @@ INCLUDE_DATASOURCES_STRING
 - Multithreaded
 
 
-## Install
+## Install & run
 
-### Using Docker-Compose
-
-Install using [docker-compose](https://docs.docker.com/compose/install/) by running:
+### Using NPM
 
 ```
-docker-compose up
+npm i
+npm run all
 ```
+
