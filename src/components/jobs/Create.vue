@@ -4,6 +4,7 @@
     <PropsForm
       v-on:changeType="changeType"
       v-on:changeProperties="changeProperties"
+      v-on:changeMeta="changeMeta"
       v-on:changeChildProperties="changeChildProperties"
     ></PropsForm>
     <button type="submit" class="btn btn-primary">Submit</button>
