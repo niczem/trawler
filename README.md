@@ -51,12 +51,11 @@ Curently the following datasources are implemented:
 - Multithreaded
 
 
-## Install
+## Install & run
 
-### Using Docker-Compose
-
-Install using [docker-compose](https://docs.docker.com/compose/install/) by running:
+### Using NPM
 
 ```
-docker-compose up
+npm i
+npm run all
 ```
