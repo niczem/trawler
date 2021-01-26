@@ -14,7 +14,7 @@ for f in ../datasources/*/index.js; do
   fi
 done
 
-template=`cat README.template.md`
+template=`cat ../docs/README.template.md`
 
 readme="${template/INCLUDE_DATASOURCES_STRING/"$markdown"}"    
 
