@@ -11,6 +11,7 @@
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
     "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt",
+    "worker": "node worker.js",
     "all": "pm2 start ecosystem.config.js"
   },
   "dependencies": {
@@ -21,6 +22,8 @@
     "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
     "ffmpeg": "0.0.4",
+    "humanoid": "0.0.8",
+    "humanoid-js": "^1.0.1",
     "json-2-csv": "^3.10.2",
     "lowdb": "^1.0.0",
     "node-stream-zip": "^1.11.4",
@@ -43,6 +46,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.1.2",
     "jest": "^26.6.3",
+    "pouchdb-server": "^4.2.0",
     "prettier": "2.1.1",
     "sass": "^1.30.0",
     "sass-loader": "^8.0.0",
@@ -50,16 +54,27 @@
     "vue-template-compiler": "^2.6.12",
     "vuetify-loader": "^1.3.0"
   },
+
   "eslintConfig": {
     "root": true,
     "env": {
       "node": true
     },
     "extends": [
-      "plugin:vue/essential"
+      "plugin:vue/essential",
+      "eslint:recommended",
+      "@vue/typescript"
     ],
-    "parserOptions": {},
-    "rules": {}
+    "rules": {
+      "no-console": "off",
+      "vue/require-v-for-key": "off"
+    },
+    "parserOptions": {
+      "parser": "@typescript-eslint/parser"
+    },
+    "globals": {
+      "L": true
+    }
   },
   "browserslist": [
     "> 1%",
