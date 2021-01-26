@@ -23,8 +23,7 @@
     "success": false,
     "fail": false,
     "branches": [
-      "main",
-      "semantic-release"
+      "main"
     ],
     "npmPublish": true,
     "tarballDir": "."
