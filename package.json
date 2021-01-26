@@ -26,7 +26,7 @@
       "main"
     ],
     "npmPublish": true,
-    "tarballDir": "."
+    "tarballDir": "./*"
   },
   "dependencies": {
     "axios": "^0.21.1",
