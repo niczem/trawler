@@ -11,7 +11,8 @@
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
     "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "generate-readme":"cd scripts && ./build-docu.sh"
   },
   "release": {
     "analyzeCommits": "@semantic-release/commit-analyzer",
