@@ -11,7 +11,22 @@
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
     "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt",
-    "all": "pm2 start ecosystem.config.js"
+    "all": "pm2 start ecosystem.config.js",
+    "semantic-release": "semantic-release"
+  },
+  "release": {
+    "analyzeCommits": "@semantic-release/commit-analyzer",
+    "verifyConditions": "@semantic-release/npm",
+    "prepare": "@semantic-release/npm",
+    "generateNotes": "@semantic-release/release-notes-generator",
+    "publish": "@semantic-release/npm",
+    "success": false,
+    "fail": false,
+    "branches": [
+      "main"
+    ],
+    "npmPublish": true,
+    "tarballDir": "."
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -46,6 +61,7 @@
     "prettier": "2.1.1",
     "sass": "^1.30.0",
     "sass-loader": "^8.0.0",
+    "semantic-release": "^17.3.7",
     "vue-cli-plugin-vuetify": "^2.0.8",
     "vue-template-compiler": "^2.6.12",
     "vuetify-loader": "^1.3.0"
