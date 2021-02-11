@@ -1,3 +1,3 @@
 [submodule "datasources/motiondetection/video-analyzer-toolkit"]
 	path = datasources/motiondetection/video-analyzer-toolkit
-	url = git@github.com:niczem/motiondetection.git
+	url = https://github.com/niczem/motiondetection.git
