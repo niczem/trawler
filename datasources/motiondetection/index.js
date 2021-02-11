@@ -20,15 +20,16 @@ module.exports = class Datasource extends Worker {
       {
         identifier: 'motiondetection',
         method: function (job, db, final_cb) {
-
           let run = async function (url, cb) {
-            
             console.log('done with pagination');
 
-            const results_file = path.resolve(__dirname, '../../data/' + job.id + '.json');
+            const results_file = path.resolve(
+              __dirname,
+              '../../data/' + job.id + '.json'
+            );
 
             const results_dir = path.resolve(__dirname, '../../data/' + job.id);
-            if (!fs.existsSync(results_dir)){
+            if (!fs.existsSync(results_dir)) {
               console.log('create dir for result images');
               fs.mkdirSync(results_dir);
             }
@@ -37,10 +38,8 @@ module.exports = class Datasource extends Worker {
 
             console.log(arrayOfFiles);
 
-            for(let i in arrayOfFiles){
-
-
-              console.log("======",arrayOfFiles[i],"======")
+            for (let i in arrayOfFiles) {
+              console.log('======', arrayOfFiles[i], '======');
 
               self.addJob({
                 type: 'motiondetection_videofile',
@@ -48,8 +47,8 @@ module.exports = class Datasource extends Worker {
                 path: arrayOfFiles[i],
                 parent: job.id,
                 filename: arrayOfFiles[i],
-                results_dir:results_dir,
-                results_file:results_file
+                results_dir: results_dir,
+                results_file: results_file,
               });
             }
             cb(null, []);
@@ -81,9 +80,7 @@ module.exports = class Datasource extends Worker {
       {
         identifier: 'motiondetection_videofile',
         method: function (job, db, final_cb) {
-
           let run = async function (url, cb) {
-            
             console.log('starting to analyse video');
 
             const shell = require('shelljs');
@@ -93,20 +90,19 @@ module.exports = class Datasource extends Worker {
             console.log(job.properties.results_file);
             console.log(job.properties.results_dir);
 
-            const script_path = path.resolve(__dirname, './video-analyzer-toolkit/main.py');
+            const script_path = path.resolve(
+              __dirname,
+              './video-analyzer-toolkit/main.py'
+            );
 
             let command = `python2 ${script_path} -v "${job.properties.path}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
             console.log(command);
 
-            await self.runShellCommand(
-              command,
-              job.id,
-              (res) => {
-                console.log("done");
-    
-                cb(null, []);
-              }
-            );
+            await self.runShellCommand(command, job.id, (res) => {
+              console.log('done');
+
+              cb(null, []);
+            });
           };
           run(job.properties.url, function (err, result) {
             if (err) {
