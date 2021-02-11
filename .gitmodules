@@ -1,0 +1,6 @@
+[submodule "datasources/motiondetection/trawler"]
+	path = datasources/motiondetection/trawler
+	url = https://github.com/niczem/trawler.git
+[submodule "datasources/motiondetection/video-analyzer-toolkit"]
+	path = datasources/motiondetection/video-analyzer-toolkit
+	url = git@github.com:niczem/motiondetection.git
