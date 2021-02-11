@@ -33,12 +33,19 @@ module.exports = class Datasource extends Worker {
               fs.mkdirSync(results_dir);
             }
 
-            const arrayOfFiles = fs.readdirSync(job.properties.path)
+            const arrayOfFiles = job.properties.path.split(',');
+
+            console.log(arrayOfFiles);
+
             for(let i in arrayOfFiles){
+
+
+              console.log("======",arrayOfFiles[i],"======")
+
               self.addJob({
                 type: 'motiondetection_videofile',
                 identifier: arrayOfFiles[i],
-                path: job.properties.path,
+                path: arrayOfFiles[i],
                 parent: job.id,
                 filename: arrayOfFiles[i],
                 results_dir:results_dir,
@@ -88,7 +95,7 @@ module.exports = class Datasource extends Worker {
 
             const script_path = path.resolve(__dirname, './video-analyzer-toolkit/main.py');
 
-            let command = `python2 ${script_path} -v "${job.properties.path}/${job.properties.filename}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
+            let command = `python2 ${script_path} -v "${job.properties.path}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
             console.log(command);
 
             await self.runShellCommand(
