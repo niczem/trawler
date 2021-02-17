@@ -36,10 +36,10 @@ module.exports = class Worker {
       var child = exec(cmd);
       
       child.stdout.on('data', function(data) {
-        self.addToLog(job_id,data);
+        self.addToLog(job_id,data,'log');
       });
       child.stderr.on('data', function(data) {
-          self.addToLog(job_id,data,'error');
+        self.addToLog(job_id,data,'error');
       });
 
       child.on('close', function(code) {
@@ -134,10 +134,7 @@ module.exports = class Worker {
           return [];
       }   
   }
-
-
   async scheduleJobs(){
-
     let jobs = await this.getJobs('scheduled');
     for(let i in jobs){
       //if job timestamp <= current time => quoe job
@@ -146,18 +143,23 @@ module.exports = class Worker {
         .find({ id: jobs[i].id })
         .assign({ status: 'quoed'})
         .write()
-      
     }
     
   }
 
+  async updateJobStatus(job_id, status){
+    this.addToLog(job_id,`status updated to ${status}`,'log')
+    this.db.get('jobs')
+    .find({ id: job_id })
+    .assign({ status: status})
+    .write()
+  }
+
     async runJob(job){
+        this.jobs_running.push(job);
         console.log('run job:');
         //set job status to running
-        this.db.get('jobs')
-          .find({ id: job.id })
-          .assign({ status: 'running'})
-          .write()
+        this.updateJobStatus(job.id,'running');
         //add new job if job is scheduled
         if(job.properties.schedule){
           let newjob = job;
@@ -213,6 +215,8 @@ module.exports = class Worker {
                   self.addJob(job.properties.continue_with_job,'quoed');
                 }
                 
+                self.updateJobStatus(job.id,'done');
+                self.jobs_running = [];
               });
             }
 
@@ -229,6 +233,7 @@ module.exports = class Worker {
             self.scheduleJobs();
 
             let jobs = await self.getJobs('quoed');
+
             if(jobs.length > 0 && self.jobs_running.length === 0){
                 self.runJob(jobs[0]);
             }

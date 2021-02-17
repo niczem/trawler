@@ -95,7 +95,7 @@ module.exports = class Datasource extends Worker {
               './video-analyzer-toolkit/main.py'
             );
 
-            let command = `python2 ${script_path} -v "${job.properties.path}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
+            let command = `python3 ${script_path} -v "${job.properties.path}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
             console.log(command);
 
             await self.runShellCommand(command, job.id, (res) => {
