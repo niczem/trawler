@@ -69,7 +69,6 @@ module.exports = class Datasource extends Worker {
             db.read()
               .get('jobs')
               .find({ id: job.id })
-              .assign({ status: 'done' })
               .assign({ output_files: { json: job.id + '.json' } })
               .write();
 
