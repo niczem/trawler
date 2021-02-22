@@ -149,10 +149,34 @@ module.exports = class Worker {
 
   async updateJobStatus(job_id, status){
     this.addToLog(job_id,`status updated to ${status}`,'log')
-    this.db.get('jobs')
-    .find({ id: job_id })
-    .assign({ status: status})
-    .write()
+    let job = this.db.get('jobs')
+    .find({ id: job_id });
+
+    const jobObj = job.value();
+    
+    if(typeof jobObj == 'undefined')
+      throw `no job with id ${job_id} found`;
+
+  
+    //update parent if parent is logged and this is the last job with parrent
+    if(jobObj.properties.parent){
+      //sibling = job with the same parent
+      let no_of_siblings = 0;
+
+      //lowdb has no possibility to query with !done =(
+      let siblings = this.db.get('jobs').filter({ parent: jobObj.properties.parent }).value();
+      for(let i in siblings){
+        if(siblings[i].status !== status)
+          no_of_siblings++
+      }
+      if(no_of_siblings == 0){
+        this.updateJobStatus(jobObj.properties.parent, status);
+      }
+    }
+
+    job.assign({ status: status})
+    .write();
+
   }
 
     async runJob(job){
