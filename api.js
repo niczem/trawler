@@ -88,7 +88,7 @@ app.post('/jobs', function(req, res){
 });
 
 
-app.get('/datasets/:id', function (req, res) {
+app.get('/jobs/:id', function (req, res) {
 	
 	const low = require('lowdb')
 	const FileSync = require('lowdb/adapters/FileSync')
