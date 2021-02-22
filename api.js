@@ -87,6 +87,17 @@ app.post('/jobs', function(req, res){
 
 });
 
+
+app.get('/datasets/:id', function (req, res) {
+	
+	const low = require('lowdb')
+	const FileSync = require('lowdb/adapters/FileSync')
+	const adapter = new FileSync('data/db.json')
+	const db = low(adapter)
+
+	res.send(db.read().get('jobs').find({ id: req.params.id }).value());
+});
+
 //clear jobs
 app.get('/jobs', function (req, res) {
 			const low = require('lowdb')
@@ -126,9 +137,6 @@ app.get('/datasets', function (req, res) {
     };
 	res.send({data:results});	
 });
-
-
-
 
 app.get('/downloaddataset/:id', function (req, res) {
 	let file = `${__dirname}/data/${req.params.id}`;
