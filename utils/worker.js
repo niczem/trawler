@@ -159,14 +159,14 @@ module.exports = class Worker {
 
   
     //update parent if parent is logged and this is the last job with parrent
-    if(jobObj.properties.parent){
+    if(jobObj.properties.parent&&status != 'quoed'){
       //sibling = job with the same parent
       let no_of_siblings = 0;
 
       //lowdb has no possibility to query with !done =(
       let siblings = this.db.get('jobs').filter({ parent: jobObj.properties.parent }).value();
       for(let i in siblings){
-        if(siblings[i].status !== status)
+        if(siblings[i].status !== 'done')
           no_of_siblings++
       }
       if(no_of_siblings == 0){
