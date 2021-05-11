@@ -91,6 +91,29 @@ module.exports = class Datasource extends Worker {
 
             const shell = require('shelljs');
 
+
+
+
+            let py_cb = async function (videopath){
+              
+              const script_path = path.resolve(
+                __dirname,
+                './video-analyzer-toolkit/main.py'
+              );
+
+              let command = `python3 ${script_path} -v "${videopath}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
+              console.log(command);
+
+              await self.runShellCommand(command, job.id, (res) => {
+                console.log('done');
+
+                cb(null, []);
+              });
+
+            }
+
+
+
             let h_ratio,v_ratio;
 
             if(job.properties.crop){
@@ -100,29 +123,15 @@ module.exports = class Datasource extends Worker {
               let area = job.properties.crop.areas[0]
               let cropped_path = job.properties.path.replace(/(\.[\w\d_-]+)$/i, '_cropped$1');;
 
-              let command = `ffmpeg -i ${job.properties.path} -filter:v "crop=${area.width*h_ratio}:${area.height*v_ratio}:${area.x*h_ratio}:${area.y*v_ratio}" ${cropped_path}`
-              await self.runShellCommand(command, job.id);
-              job.properties.path = cropped_path;
-            }
+              let command = `ffmpeg -loglevel error -i ${job.properties.path} -filter:v "crop=${area.width*h_ratio}:${area.height*v_ratio}:${area.x*h_ratio}:${area.y*v_ratio}" ${cropped_path}`
+              await self.runShellCommand(command, job.id, function(){
+                py_cb(cropped_path);
+              });
+              //job.properties.path = cropped_path;
+            }else
+              py_cb(job.properties.path)
 
-            console.log(job.properties.path);
-            console.log(job.properties.filename);
-            console.log(job.properties.results_file);
-            console.log(job.properties.results_dir);
 
-            const script_path = path.resolve(
-              __dirname,
-              './video-analyzer-toolkit/main.py'
-            );
-
-            let command = `python3 ${script_path} -v "${job.properties.path}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
-            console.log(command);
-
-            await self.runShellCommand(command, job.id, (res) => {
-              console.log('done');
-
-              cb(null, []);
-            });
           };
           run(job.properties.url, function (err, result) {
             if (err) {
