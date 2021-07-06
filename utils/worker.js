@@ -30,23 +30,32 @@ module.exports = class Worker {
     //@cmd command to be run
     //@cb cb(err,result) function to be executed
     runShellCommand(cmd,job_id,cb){
+
+          
       let  self  =  this;
-      console.log('RUN COMMAND:',cmd);
-      var exec = require('child_process').exec;
-      var child = exec(cmd);
-      
-      child.stdout.on('data', function(data) {
-        self.addToLog(job_id,data,'log');
-      });
-      child.stderr.on('data', function(data) {
-        self.addToLog(job_id,data,'error');
+      return new Promise((resolve, reject) => {
+
+          console.log('Initial');
+          resolve();
+          console.log('RUN COMMAND:',cmd);
+          var exec = require('child_process').exec;
+          var child = exec(cmd);
+          
+          child.stdout.on('data', function(data) {
+            self.addToLog(job_id,data,'log');
+          });
+          child.stderr.on('data', function(data) {
+            self.addToLog(job_id,data,'error');
+          });
+
+          child.on('close', function(code) {
+            //Here you can get the exit code of the script
+            console.log('closing code: ' + code);
+            cb(code);
+            resolve(code);
+          });
       });
 
-      child.on('close', function(code) {
-        cb(code);
-        //Here you can get the exit code of the script
-        console.log('closing code: ' + code);
-      });
       
     }
     //loads datasources
@@ -148,6 +157,7 @@ module.exports = class Worker {
   }
 
   async updateJobStatus(job_id, status){
+    this.db.read();
     this.addToLog(job_id,`status updated to ${status}`,'log')
     let job = this.db.get('jobs')
     .find({ id: job_id });
@@ -156,6 +166,9 @@ module.exports = class Worker {
     
     if(typeof jobObj == 'undefined')
       throw `no job with id ${job_id} found`;
+
+    if(status == 'done')
+      this.jobs_running = []
 
   
     //update parent if parent is logged and this is the last job with parrent
@@ -216,36 +229,36 @@ module.exports = class Worker {
         let datasources = this.loadDatasources();
 
         let self = this;
-        //loop through loaded datasources
-        for(let i in datasources){
-          //loop through datasource methods
-          for(let n in datasources[i]){
-            console.log(datasources[i][n].identifier,job.properties.type);
 
-            //run method if it matches the method in the identifier
-            if(datasources[i][n].identifier === job.properties.type){
+          //loop through loaded datasources
+          for(let i in datasources){
+            //loop through datasource methods
+            for(let n in datasources[i]){
+              
+              //run method if it matches the method in the identifier
+              if(datasources[i][n].identifier === job.properties.type){
 
-              datasources[i][n].method(job,this.db,async function(){
-                //callback after function ends.
-                //NEEDS TO BE IMPLEMENTED IN JOB METHOD!!!
-                if(job.properties.continue_with_job){
+                datasources[i][n].method(job,this.db,async function(){
+                  //callback after function ends.
+                  //NEEDS TO BE IMPLEMENTED IN JOB METHOD!!!
+                  if(job.properties.continue_with_job){
 
-                  //get job obj again after output files have been added
-                  job = await self.getJob(job.id);
-                  console.log('got job 2nd time',job);
-                  job.properties.continue_with_job.parent=job.id
-                  job.properties.continue_with_job.input_files=job.output_files;
-                  job.properties.continue_with_job
-                  self.addJob(job.properties.continue_with_job,'quoed');
-                }
-                
-                self.updateJobStatus(job.id,'done');
-                self.jobs_running = [];
-              });
+                    //get job obj again after output files have been added
+                    job = await self.getJob(job.id);
+                    console.log('got job 2nd time',job);
+                    job.properties.continue_with_job.parent=job.id
+                    job.properties.continue_with_job.input_files=job.output_files;
+                    job.properties.continue_with_job
+                    self.addJob(job.properties.continue_with_job,'quoed');
+                  }
+                  
+                  self.updateJobStatus(job.id,'done');
+                  self.jobs_running = [];
+                });
+              }
+
             }
-
           }
-        }
 
     }
 
@@ -257,7 +270,6 @@ module.exports = class Worker {
             self.scheduleJobs();
 
             let jobs = await self.getJobs('quoed');
-
             if(jobs.length > 0 && self.jobs_running.length === 0){
                 self.runJob(jobs[0]);
             }
