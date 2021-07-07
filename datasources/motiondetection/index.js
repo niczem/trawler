@@ -101,11 +101,18 @@ module.exports = class Datasource extends Worker {
                 './video-analyzer-toolkit/main.py'
               );
 
-              let command = `python3 ${script_path} -v "${videopath}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file}`;
+
+    parser.add_argument('--output_path', dest='output_path', required=True, type=str, help='path to load found motion events to to')
+              let command = `python3 ${script_path} -v "${videopath}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file} --output_path=`;
               console.log(command);
 
               await self.runShellCommand(command, job.id, (res) => {
                 console.log('done');
+                console.log('remove cropped video');
+
+                if(job.properties.crop){
+                    fs.unlink(videopath);
+                }
 
                 cb(null, []);
               });
