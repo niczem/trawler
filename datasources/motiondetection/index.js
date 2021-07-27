@@ -37,7 +37,7 @@ module.exports = class Datasource extends Worker {
             const arrayOfFiles = job.properties.path.split(',');
 
             let crop = false;
-            if(job.properties.areas.length > 0){
+            if(job.properties.areas&&job.properties.areas.length > 0){
               crop = {
                 areas:job.properties.areas,
                 totalwidth:job.properties.totalwidth,
@@ -52,6 +52,7 @@ module.exports = class Datasource extends Worker {
                 path: arrayOfFiles[i],
                 parent: job.id,
                 filename: arrayOfFiles[i],
+                outputpath: job.properties.outputpath,
                 results_dir: results_dir,
                 results_file: results_file,
                 crop:crop
@@ -101,10 +102,14 @@ module.exports = class Datasource extends Worker {
                 './video-analyzer-toolkit/main.py'
               );
 
+              let outputpath = '';
+              console.log(job.properties)
+              if(job.properties.outputpath){
+                outputpath = `--output_path ${job.properties.outputpath[0]}`;
+              }
 
-    parser.add_argument('--output_path', dest='output_path', required=True, type=str, help='path to load found motion events to to')
-              let command = `python3 ${script_path} -v "${videopath}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file} --output_path=`;
-              console.log(command);
+              let command = `python3 ${script_path} -v "${videopath}" -u ${job.properties.results_dir} -i -j ${job.properties.results_file} ${outputpath}`;
+              
 
               await self.runShellCommand(command, job.id, (res) => {
                 console.log('done');
