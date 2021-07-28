@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors')
 const fs = require('fs')
 const path = require('path')
+const { Sequelize } = require('sequelize');
+
 const app = express()// Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded());
 
