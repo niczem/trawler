@@ -1,5 +1,5 @@
 /**
- * @file **url** generic http scraper
+ * @file **motiondetection** script to to motionanalysis in directory with videofiles
  */
 
 const path = require('path');
