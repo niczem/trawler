@@ -11,8 +11,23 @@
     "postinstall": "mkdir -p data&&touch data/db.json&&cp -n .env.template .env",
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
+    "test": "jest",
     "semantic-release": "semantic-release",
-    "test": "jest"
+    "generate-readme": "cd scripts && ./build-docu.sh"
+  },
+  "release": {
+    "analyzeCommits": "@semantic-release/commit-analyzer",
+    "verifyConditions": "@semantic-release/npm",
+    "prepare": "@semantic-release/npm",
+    "generateNotes": "@semantic-release/release-notes-generator",
+    "publish": "@semantic-release/npm",
+    "success": false,
+    "fail": false,
+    "branches": [
+      "main"
+    ],
+    "npmPublish": true,
+    "tarballDir": "./*"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -67,19 +82,5 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ],
-  "release": {
-    "analyzeCommits": "@semantic-release/commit-analyzer",
-    "verifyConditions": "@semantic-release/npm",
-    "prepare": "@semantic-release/npm",
-    "generateNotes": "@semantic-release/release-notes-generator",
-    "publish": "@semantic-release/npm",
-    "success": false,
-    "fail": false,
-    "branches": [
-      "main"
-    ],
-    "npmPublish": true,
-    "tarballDir": "./*"
-  }
+  ]
 }
