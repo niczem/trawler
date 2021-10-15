@@ -56,6 +56,8 @@ Curently the following datasources are implemented:
 ### Using NPM
 
 ```
+git clone https://github.com/niczem/trawler.git --recurse-submodules
+cd trawler
 npm i
 npm run all
 ```
