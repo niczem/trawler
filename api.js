@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors')
 const fs = require('fs')
 const path = require('path')
+const { Sequelize } = require('sequelize');
+
 const app = express()// Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded());
 
@@ -87,6 +89,38 @@ app.post('/jobs', function(req, res){
 
 });
 
+
+app.get('/jobs/:id', function (req, res) {
+	
+	const low = require('lowdb')
+	const FileSync = require('lowdb/adapters/FileSync')
+	const adapter = new FileSync('data/db.json')
+	const db = low(adapter)
+
+	res.send(db.read().get('jobs').find({ id: req.params.id }).value());
+});
+app.get('/jobs/:id/status', function (req, res) {
+	
+	const low = require('lowdb')
+	const FileSync = require('lowdb/adapters/FileSync')
+	const adapter = new FileSync('data/db.json')
+	const db = low(adapter)
+
+
+	let no_of_children = 0, no_of_done_children = 0;
+	let all_jobs = db.read().get('jobs').value();
+	for(let i in all_jobs){
+		if(all_jobs[i].properties&&all_jobs[i].properties.parent == req.params.id){
+			no_of_children++;
+
+			if(all_jobs[i].status == "done"){
+				no_of_done_children++;
+			}
+		}
+	}
+	res.send({no_of_children,no_of_done_children});
+});
+
 //clear jobs
 app.get('/jobs', function (req, res) {
 			const low = require('lowdb')
@@ -126,9 +160,6 @@ app.get('/datasets', function (req, res) {
     };
 	res.send({data:results});	
 });
-
-
-
 
 app.get('/downloaddataset/:id', function (req, res) {
 	let file = `${__dirname}/data/${req.params.id}`;

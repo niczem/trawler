@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <Dashboard></Dashboard>
+    <v-app data-app>
+      <Dashboard></Dashboard>
+    </v-app>
   </div>
 </template>
 
