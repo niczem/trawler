@@ -33,10 +33,10 @@ module.exports = class Datasource extends Worker {
             }
             while (i <= pagination_max) {
               let step = i;
-              if(job.properties.increase_by){
-                step = i*parseInt(job.properties.increase_by)
+              if (job.properties.increase_by) {
+                step = i * parseInt(job.properties.increase_by);
               }
-              url = job.properties.url.replace('%%%page%%%',step);
+              url = job.properties.url.replace('%%%page%%%', step);
 
               let response;
               try {
@@ -47,12 +47,17 @@ module.exports = class Datasource extends Worker {
               }
               //@sec this feels terribly wrong
               let data_obj;
-              try{
-              if (job.properties.result_index)
-                eval('data_obj = response.data.' + job.properties.result_index);
-              else data_obj = response.data;
-              }catch(e){
-                console.log("error adding response to results with result_index:;",e)
+              try {
+                if (job.properties.result_index)
+                  eval(
+                    'data_obj = response.data.' + job.properties.result_index
+                  );
+                else data_obj = response.data;
+              } catch (e) {
+                console.log(
+                  'error adding response to results with result_index:;',
+                  e
+                );
               }
 
               console.log('continue with page ', i);
@@ -79,11 +84,9 @@ module.exports = class Datasource extends Worker {
             if (err) {
               console.log(err);
             } else {
-
-            //tid
-            console.log(result[0].length)
-            if(result[0].length == 1)
-              result = result[0];
+              //tid
+              console.log(result[0].length);
+              if (result[0].length == 1) result = result[0];
 
               fs.writeFile(
                 path.resolve(__dirname, '../../data/' + job.id + '.json'),
