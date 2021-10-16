@@ -40,6 +40,11 @@ module.exports = [
         type: 'number',
       },
       {
+        name: 'increase_by',
+        title: 'Increase page by (e.g. 1 or 50 or 100)',
+        type: 'number',
+      },
+      {
         name: 'authorization_header',
         title: 'Authorization Header',
         type: 'text',
