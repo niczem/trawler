@@ -18,10 +18,9 @@ const rimraf = require('rimraf');
 const cheerio = require('cheerio'),
   axios = require('axios');
 
-
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 class onionlistCrawler {
   getCategoryLinkList(link, limit = 3, callback, results = []) {
@@ -36,21 +35,21 @@ class onionlistCrawler {
         console.log(23);
         $('#linksList>ul a').each(function (i, e) {
           let link = $(e).attr('href');
-          console.log(link.replace('../..',''));
-          results.push(link.replace('../..','').replace('/../','/'));
+          console.log(link.replace('../..', ''));
+          results.push(link.replace('../..', '').replace('/../', '/'));
         });
         console.log(443);
         console.log(results);
         limit = limit - 1;
-        let url2 =`https://onionlist.net/cat/${this.category_number}/${capitalizeFirstLetter(this.category_title)}/${$('#linksNavbar>a:last-of-type').attr(
-          'href'
-        ).replace(capitalizeFirstLetter(this.category_title)+'/','')}`;
-        console.log('url2',url2);
-        self.getCategoryLinkList(url2,
-          limit,
-          callback,
-          results
-        );
+        let url2 = `https://onionlist.net/cat/${
+          this.category_number
+        }/${capitalizeFirstLetter(this.category_title)}/${$(
+          '#linksNavbar>a:last-of-type'
+        )
+          .attr('href')
+          .replace(capitalizeFirstLetter(this.category_title) + '/', '')}`;
+        console.log('url2', url2);
+        self.getCategoryLinkList(url2, limit, callback, results);
       })
       .catch(function (e) {
         console.log(e);
@@ -71,8 +70,8 @@ class onionlistCrawler {
     });
     const page = await browser.newPage();
     try {
-      url = url.replace(".onion.ws",".onion")
-      url = url.replace("https://","http://")
+      url = url.replace('.onion.ws', '.onion');
+      url = url.replace('https://', 'http://');
       await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
 
       await page.setViewport({ width: 1600, height: 1600 });
@@ -86,7 +85,7 @@ class onionlistCrawler {
     await browser.close();
   }
   getPageInfo(link) {
-    console.log('get page info for ',link);
+    console.log('get page info for ', link);
 
     let self = this;
     return new Promise((resolve, reject) => {
@@ -97,10 +96,10 @@ class onionlistCrawler {
           .then((response) => {
             let $ = cheerio.load(response.data);
             let link = $('#infoList a:first-of-type').attr('href');
-            if(!link){
+            if (!link) {
               link = $('#linkInfos a button').parent().attr('href');
             }
-            console.log(link,'link');
+            console.log(link, 'link');
             let good_ratings, bad_ratings, is_online, online_date, description;
 
             let site_title = $('#siteTitle h1').text();
@@ -162,29 +161,26 @@ class onionlistCrawler {
   async getPagesForCategory(pagename, limit = 3, callback) {
     let self = this;
 
-    if(!this.pagename){
-
+    if (!this.pagename) {
       this.pagename = pagename;
       this.category_number = this.pagename.split('/')[0];
       this.category_title = this.pagename.split('/')[1];
     }
 
-    let url = `https://onionlist.net/cat/${capitalizeFirstLetter(pagename)}.html`;
+    let url = `https://onionlist.net/cat/${capitalizeFirstLetter(
+      pagename
+    )}.html`;
     console.log(url);
     setTimeout(function () {
-      self.getCategoryLinkList(
-        url,
-        limit,
-        async function (links) {
-          console.log('function done, got links:', links);
-          let results = [];
-          for (let i in links) {
-            let data = await self.getPageInfo(links[i]);
-            results.push(data);
-          }
-          callback(results);
+      self.getCategoryLinkList(url, limit, async function (links) {
+        console.log('function done, got links:', links);
+        let results = [];
+        for (let i in links) {
+          let data = await self.getPageInfo(links[i]);
+          results.push(data);
         }
-      );
+        callback(results);
+      });
     }, 2000);
   }
 }
@@ -221,14 +217,11 @@ module.exports = class Datasource extends Worker {
               }
               console.log(posts);
               for (let i in posts) {
-                console.log(posts[i].link); 
+                console.log(posts[i].link);
                 console.log(i + '/' + posts.length);
-                
+
                 try {
-                  await crawler.takeScreenShot(
-                    posts[i].link,
-                    download_path
-                  );
+                  await crawler.takeScreenShot(posts[i].link, download_path);
                 } catch (e) {
                   console.log(e);
                 }
