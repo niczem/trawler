@@ -1,6 +1,6 @@
 /**
  * @file **onionlist** download tor-catalogue from onionlist.o
- * 
+ *
  * convert \( *.jpg -resize 192x +append \) \( -clone 0 -crop 192x+0+0 -set delay 100 \) \( -clone 0 -crop 192x+48+0 -set delay 25 \) \( -clone 0 -crop 192x+96+0 \) \( -clone 0 -crop 192x+144+0 \) \( -clone 0 -crop 192x+192+0 -set delay 100 \) \( -clone 0 -crop 192x+240+0 -set delay 25 \) \( -clone 0 -crop 192x+288+0 \) \( -clone 0 -crop 192x+336+0 \) -delete 0 -loop 10 +repage test.gif
  */
 const path = require('path');
@@ -80,8 +80,8 @@ class onionlistCrawler {
       await page.screenshot({
         path: path + '/' + url.replace(/[^\w\s]/gi, '') + '.jpeg',
         fullPage: true,
-        type:'jpeg',
-        captureBeyondViewport:false
+        type: 'jpeg',
+        captureBeyondViewport: false,
       });
     } catch (e) {
       console.log('error', e);
@@ -89,7 +89,6 @@ class onionlistCrawler {
     await browser.close();
   }
   getPageInfo(link) {
-
     let self = this;
     return new Promise((resolve, reject) => {
       console.log('get page info', link);
