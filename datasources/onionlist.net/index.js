@@ -243,7 +243,7 @@ module.exports = class Datasource extends Worker {
                 '/../' +
                 job.id +
                 '.gif';
-              
+
               let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -loop 1 -i ${download_path}/out.png  -vf "scroll=vertical=0.0002,crop=iw:600:0:0,format=yuv420p" -t 120 ${download_path}/output.mp4`;
               console.log('create gif');
               self.runShellCommand(
