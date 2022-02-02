@@ -73,11 +73,12 @@ class onionlistCrawler {
       url = url.replace('.onion.ws', '.onion');
       url = url.replace('https://', 'http://');
       await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
-
-      await page.setViewport({ width: 1600, height: 1600 });
+      await page.setViewport({ width: 1280, height: 768 });
       await page.screenshot({
-        path: path + '/' + url.replace(/[^\w\s]/gi, '') + '.png',
+        path: path + '/' + url.replace(/[^\w\s]/gi, '') + '.jpeg',
         fullPage: true,
+        type: 'jpeg',
+        captureBeyondViewport: false,
       });
     } catch (e) {
       console.log('error', e);
@@ -85,8 +86,6 @@ class onionlistCrawler {
     await browser.close();
   }
   getPageInfo(link) {
-    console.log('get page info for ', link);
-
     let self = this;
     return new Promise((resolve, reject) => {
       console.log('get page info', link);
@@ -244,9 +243,11 @@ module.exports = class Datasource extends Worker {
                 '/../' +
                 job.id +
                 '.gif';
+
+              let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -loop 1 -i ${download_path}/out.png  -vf "scroll=vertical=0.0002,crop=iw:600:0:0,format=yuv420p" -t 120 ${download_path}/output.mp4`;
               console.log('create gif');
               self.runShellCommand(
-                gif_move_and_compress,
+                create_mp4_file_from_screenshots,
                 job.id,
                 async function () {
                   console.log('zip screenshot dir');
