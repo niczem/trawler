@@ -1,7 +1,5 @@
 /**
- * @file **onionlist** download tor-catalogue from onionlist.o
- *
- * convert \( *.jpg -resize 192x +append \) \( -clone 0 -crop 192x+0+0 -set delay 100 \) \( -clone 0 -crop 192x+48+0 -set delay 25 \) \( -clone 0 -crop 192x+96+0 \) \( -clone 0 -crop 192x+144+0 \) \( -clone 0 -crop 192x+192+0 -set delay 100 \) \( -clone 0 -crop 192x+240+0 -set delay 25 \) \( -clone 0 -crop 192x+288+0 \) \( -clone 0 -crop 192x+336+0 \) -delete 0 -loop 10 +repage test.gif
+ * @file **onionlist** download tor-catalogue from onionlist.org
  */
 const path = require('path');
 
@@ -75,7 +73,6 @@ class onionlistCrawler {
       url = url.replace('.onion.ws', '.onion');
       url = url.replace('https://', 'http://');
       await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
-
       await page.setViewport({ width: 1280, height: 768 });
       await page.screenshot({
         path: path + '/' + url.replace(/[^\w\s]/gi, '') + '.jpeg',
@@ -246,6 +243,7 @@ module.exports = class Datasource extends Worker {
                 '/../' +
                 job.id +
                 '.gif';
+              
               let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -loop 1 -i ${download_path}/out.png  -vf "scroll=vertical=0.0002,crop=iw:600:0:0,format=yuv420p" -t 120 ${download_path}/output.mp4`;
               console.log('create gif');
               self.runShellCommand(
