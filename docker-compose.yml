@@ -1,0 +1,18 @@
+
+version: '3.7'
+
+services:
+  trawler:
+    container_name: trawler.all
+    ports:
+      - 3000:3000
+      - 8080:8080
+    build:
+      context: .
+    volumes:
+        - ./docker/couchdb/etc/local.d:/opt/bitnami/couchdb/etc/local.d  
+  tor-node:
+    image: osminogin/tor-simple
+    restart: always
+    ports:
+      - 9050:9050
