@@ -10,7 +10,7 @@ services:
     build:
       context: .
     volumes:
-        - ./docker/couchdb/etc/local.d:/opt/bitnami/couchdb/etc/local.d  
+        - ./data:/app/trawler/data  
   tor-node:
     image: osminogin/tor-simple
     restart: always
