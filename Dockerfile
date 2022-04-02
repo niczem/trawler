@@ -14,7 +14,7 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 # you'll need to launch puppeteer with:
 #     browser.launch({executablePath: 'google-chrome-stable'})
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/google-chrome-stable".
+ENV PUPPETEER_EXECUTABLE_PATH="/opt/google/chrome/google-chrome".
 # Run everything after as non-privileged user.
 # ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
@@ -27,11 +27,11 @@ COPY . .
 #USER root
 #RUN chown pptruser /app/trawler
 #USER pptruser
-RUN npm install --prefix /app/trawler
+RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
-
+RUN apt install zip imagemagick -y
 EXPOSE 3000
 CMD [ "npm", "run","all"]
 

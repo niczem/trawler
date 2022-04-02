@@ -12,7 +12,7 @@ let data_dir = process.env.data_dir;
 const fs = require('fs').promises;
 const Fs = require('fs');
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 const rimraf = require('rimraf');
 
 const cheerio = require('cheerio'),
@@ -27,9 +27,16 @@ class onionlistCrawler {
     console.log('asd', limit, link);
     if (limit === 0) return callback(results);
 
+    const https = require('https');
+
+    // At request level
+    const agent = new https.Agent({  
+      rejectUnauthorized: false
+    });
+
     let self = this;
     axios
-      .get(link)
+      .get(link, { httpsAgent: agent })
       .then((response) => {
         let $ = cheerio.load(response.data);
         console.log(23);
@@ -62,10 +69,12 @@ class onionlistCrawler {
   async takeScreenShot(url, path) {
     const browser = await puppeteer.launch({
       headless: true,
+      executablePath: 'google-chrome-stable',
+      ignoreHTTPSErrors: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--proxy-server=socks5://127.0.0.1:9050',
+        '--proxy-server=socks5://tor:9050'
       ],
     });
     const page = await browser.newPage();
@@ -87,11 +96,18 @@ class onionlistCrawler {
   }
   getPageInfo(link) {
     let self = this;
+    const https = require('https');
+
+    // At request level
+    const agent = new https.Agent({  
+      rejectUnauthorized: false
+    });
+
     return new Promise((resolve, reject) => {
       console.log('get page info', link);
       setTimeout(function () {
         axios
-          .get(`https://onionlist.net${link}`)
+          .get(`https://onionlist.net${link}`, { httpsAgent: agent })
           .then((response) => {
             let $ = cheerio.load(response.data);
             let link = $('#infoList a:first-of-type').attr('href');

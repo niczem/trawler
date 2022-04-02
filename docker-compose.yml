@@ -11,7 +11,7 @@ services:
       context: .
     volumes:
         - ./data:/app/trawler/data  
-  tor-node:
+  tor:
     image: osminogin/tor-simple
     restart: always
     ports:
