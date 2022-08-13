@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "all": "node worker.js",
+    "all": "pm2 start ecosystem.config.js",
     "googlesearch:install": "cd GoogleSearchCrawler && pip install -r requirements.txt",
     "postinstall": "mkdir -p data&&touch data/db.json&&cp -n .env.template .env",
     "prettier:check": "prettier --check \"{src,services,datasources}/**/*.{vue,js,ts}\"",
