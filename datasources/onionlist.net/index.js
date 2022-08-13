@@ -260,11 +260,11 @@ module.exports = class Datasource extends Worker {
                 job.id +
                 '.gif';
 
-              let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -loop 1 -i ${download_path}/out.png  -vf "scroll=vertical=0.0002,crop=iw:600:0:0,format=yuv420p" -t 120 ${download_path}/output.mp4`;
+              let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -f lavfi -i color=s=1920x1080 -loop 1 -t 0.08 -i ${download_path}/out.png -filter_complex "[1:v]scale=1920:-2,setpts=if(eq(N\,0)\,0\,1+1/0.02/TB),fps=25[fg]; [0:v][fg]overlay=y=-'t*h*0.02':eof_action=endall[v]" -map "[v]" ${download_path}/output.mp4`;
               console.log('create gif');
               self.runShellCommand(
                 create_mp4_file_from_screenshots,
-                job.id,
+                job.id,    
                 async function () {
                   console.log('zip screenshot dir');
                   await self.zipDir(
