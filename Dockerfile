@@ -33,5 +33,5 @@ RUN npm install
 
 RUN apt install zip imagemagick ffmpeg -y
 EXPOSE 3000
-CMD [ "npm", "run","all"]
+
 

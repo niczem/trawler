@@ -2,13 +2,28 @@
 version: '3.7'
 
 services:
-  trawler:
-    container_name: trawler.all
+  trawler_web:
+    container_name: trawler.web
+    entrypoint: npm --prefix /app/trawler run serve 
     ports:
-      - 3000:3000
       - 8080:8080
     build:
       context: .
+    image: trawler:latest
+    volumes:
+        - ./data:/app/trawler/data 
+  trawler_api:
+    container_name: trawler.api
+    entrypoint: node  /app/trawler/api.js 
+    ports:
+      - 3000:3000
+    image: trawler:latest
+    volumes:
+        - ./data:/app/trawler/data
+  trawler_worker:
+    container_name: trawler.worker
+    entrypoint: node /app/trawler/worker.js
+    image: trawler:latest
     volumes:
         - ./data:/app/trawler/data  
   tor:
