@@ -12,7 +12,7 @@ let data_dir = process.env.data_dir;
 const fs = require('fs').promises;
 const Fs = require('fs');
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
 const rimraf = require('rimraf');
 
 const cheerio = require('cheerio'),
@@ -27,9 +27,16 @@ class onionlistCrawler {
     console.log('asd', limit, link);
     if (limit === 0) return callback(results);
 
+    const https = require('https');
+
+    // At request level
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+
     let self = this;
     axios
-      .get(link)
+      .get(link, { httpsAgent: agent })
       .then((response) => {
         let $ = cheerio.load(response.data);
         console.log(23);
@@ -62,10 +69,12 @@ class onionlistCrawler {
   async takeScreenShot(url, path) {
     const browser = await puppeteer.launch({
       headless: true,
+      executablePath: 'google-chrome-stable',
+      ignoreHTTPSErrors: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--proxy-server=socks5://127.0.0.1:9050',
+        '--proxy-server=socks5://tor:9050',
       ],
     });
     const page = await browser.newPage();
@@ -87,11 +96,18 @@ class onionlistCrawler {
   }
   getPageInfo(link) {
     let self = this;
+    const https = require('https');
+
+    // At request level
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+
     return new Promise((resolve, reject) => {
       console.log('get page info', link);
       setTimeout(function () {
         axios
-          .get(`https://onionlist.net${link}`)
+          .get(`https://onionlist.net${link}`, { httpsAgent: agent })
           .then((response) => {
             let $ = cheerio.load(response.data);
             let link = $('#infoList a:first-of-type').attr('href');
@@ -244,7 +260,7 @@ module.exports = class Datasource extends Worker {
                 job.id +
                 '.gif';
 
-              let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -loop 1 -i ${download_path}/out.png  -vf "scroll=vertical=0.0002,crop=iw:600:0:0,format=yuv420p" -t 120 ${download_path}/output.mp4`;
+              let create_mp4_file_from_screenshots = `mogrify -crop 1280  ${download_path}/*.jpeg -gravity Center && convert -append ${download_path}/*.jpeg ${download_path}/out.png && ffmpeg -f lavfi -i color=s=1920x1080 -loop 1 -t 0.08 -i ${download_path}/out.png -filter_complex "[1:v]scale=1920:-2,setpts=if(eq(N\,0)\,0\,1+1/0.02/TB),fps=25[fg]; [0:v][fg]overlay=y=-'t*h*0.02':eof_action=endall[v]" -map "[v]" ${download_path}/output.mp4`;
               console.log('create gif');
               self.runShellCommand(
                 create_mp4_file_from_screenshots,
