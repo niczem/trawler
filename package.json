@@ -13,7 +13,7 @@
     "prettier:write": "prettier --write \"{src,services,datasources}/**/*.{vue,js,ts}\"",
     "test": "jest",
     "semantic-release": "semantic-release",
-    "update-dependencies":"ncu -u",
+    "update-dependencies": "ncu -u",
     "generate-readme": "cd scripts && ./build-docu.sh"
   },
   "release": {
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-eslint": "^4.5.13",
+    "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-service": "^4.5.13",
     "babel-eslint": "^10.0.3",
     "eslint": "^8.22.0",
