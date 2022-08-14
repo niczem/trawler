@@ -30,8 +30,8 @@ class onionlistCrawler {
     const https = require('https');
 
     // At request level
-    const agent = new https.Agent({  
-      rejectUnauthorized: false
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
     });
 
     let self = this;
@@ -74,7 +74,7 @@ class onionlistCrawler {
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--proxy-server=socks5://tor:9050'
+        '--proxy-server=socks5://tor:9050',
       ],
     });
     const page = await browser.newPage();
@@ -99,8 +99,8 @@ class onionlistCrawler {
     const https = require('https');
 
     // At request level
-    const agent = new https.Agent({  
-      rejectUnauthorized: false
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
     });
 
     return new Promise((resolve, reject) => {
@@ -264,7 +264,7 @@ module.exports = class Datasource extends Worker {
               console.log('create gif');
               self.runShellCommand(
                 create_mp4_file_from_screenshots,
-                job.id,    
+                job.id,
                 async function () {
                   console.log('zip screenshot dir');
                   await self.zipDir(
