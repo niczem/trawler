@@ -56,11 +56,12 @@ app.post('/jobs', function(req, res){
 
 	let time = new Date().getTime();
 
-	if(!req.body.properties.identifier)
+	if(req.body.properties.query)
 		req.body.properties.identifier = req.body.properties.query
-	if(!req.body.properties.identifier)
+	if(req.body.properties.category)
 		req.body.properties.identifier = req.body.properties.category.replace('/','-');
-
+	if(!req.body.properties.identifier)
+		req.body.properties.identifier = '';
 
 	if(!req.body.properties.continue_with_job)
 		req.body.properties.continue_with_job = false;
