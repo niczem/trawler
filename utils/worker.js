@@ -66,7 +66,6 @@ module.exports = class Worker {
       let datasources = []
       for(let i in config.datasources){
         let Datasource = require(`../datasources/${config.datasources[i]}/index.js`);
-        let datasource = new Datasource();
         datasources.push(new Datasource().getMethods());
       }
       return datasources;
@@ -84,6 +83,24 @@ module.exports = class Worker {
         "type":type,
         "timestamp": new Date().getTime(),
         "value": value
+      });
+
+      job.assign(jobObj)
+      .write();
+
+    }
+    addToHistory(job_id,jobstatus) {
+      let job = this.db.get('jobs')
+      .find({ id: job_id });
+
+      let jobObj = job.value();
+      
+      if(typeof jobObj == 'undefined')
+        throw `no job with id ${job_id} found`;
+
+      jobObj.history.push({
+        "timestamp": new Date().getTime(),
+        "status": jobstatus
       });
 
       job.assign(jobObj)
@@ -158,6 +175,7 @@ module.exports = class Worker {
 
   async updateJobStatus(job_id, status){
     this.db.read();
+    this.addToHistory(job_id,status);
     this.addToLog(job_id,`status updated to ${status}`,'log')
     let job = this.db.get('jobs')
     .find({ id: job_id });
@@ -220,12 +238,6 @@ module.exports = class Worker {
           this.addJob(newjob.properties,'scheduled',timestamp);
         }
 
-        let database_name = '';
-        if(job.properties.parent == null)
-            database_name = job.id;
-        else
-            database_name = job.properties.parent;
-
         let datasources = this.loadDatasources();
 
         let self = this;
@@ -234,7 +246,6 @@ module.exports = class Worker {
           for(let i in datasources){
             //loop through datasource methods
             for(let n in datasources[i]){
-              
               //run method if it matches the method in the identifier
               if(datasources[i][n].identifier === job.properties.type){
 
@@ -256,7 +267,6 @@ module.exports = class Worker {
                   self.jobs_running = [];
                 });
               }
-
             }
           }
 
