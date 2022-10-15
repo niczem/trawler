@@ -16,7 +16,7 @@ A job scheduler and analysis tool for webscraping (and other) tasks.
 
 Curently the following datasources are implemented:
 
-
+"
    - **facebook posts and reactions**
    scrape facebook posts, comments and reactions (like, heart, etc)
    - **gab (nazi-twitter)**
@@ -29,12 +29,18 @@ Curently the following datasources are implemented:
    sends mails and files - mostly usefull in pipelines
    - **masscan**
    udp based port scanner (requires docker)
+   - **motiondetection**
+   script to to motionanalysis in directory with videofiles
    - **onionlist**
    download tor-catalogue from onionlist.org
+   - **onions.danwin1210.de**
+   download tor-catalogue from danwin1210.de, and creates screenshots of each website in the result
    - **tiktok**
    get video metadata per hashtag, download them and analyse the text using easyOCR
    - **url**
    generic http scraper
+   - ** scrapes comma separated list of urls and creates screenshot of each of them**
+  "
 
 ### Create your own datasource
     - copy template dir in ./jobs
@@ -68,8 +74,6 @@ Curently the following datasources are implemented:
 ### Using NPM
 
 ```
-git clone https://github.com/niczem/trawler.git --recurse-submodules
-cd trawler
 npm i
 npm run all
 ```
