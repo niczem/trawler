@@ -23,8 +23,8 @@ Curently the following datasources are implemented:
    crawl posts for user
    - **google dorking**
    find interesting files and download them
-   - **url**
-   generic http scraper
+   - **json to csv**
+   convert json array into csv
    - **mail**
    sends mails and files - mostly usefull in pipelines
    - **masscan**
@@ -39,8 +39,8 @@ Curently the following datasources are implemented:
    get video metadata per hashtag, download them and analyse the text using easyOCR
    - **url**
    generic http scraper
-   - ** scrapes comma separated list of urls and creates screenshot of each of them**
-  "
+   - **urlscreenshotter**
+   scrapes comma separated list of urls and creates screenshot of each of them"
 
 ### Create your own datasource
     - copy template dir in ./jobs

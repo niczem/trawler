@@ -1,5 +1,5 @@
 /**
- * @file **url** generic http scraper
+ * @file **json to csv** convert json array into csv
  */
 
 const path = require('path');

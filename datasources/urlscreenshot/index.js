@@ -1,5 +1,5 @@
 /**
- * @file *urlscreenshotter* scrapes comma separated list of urls and creates screenshot of each of them
+ * @file **urlscreenshotter** scrapes comma separated list of urls and creates screenshot of each of them
  */
 const path = require('path');
 
