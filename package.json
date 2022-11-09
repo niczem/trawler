@@ -45,6 +45,7 @@
     "pm2": "^5.1.1",
     "puppeteer": "^5.5.0",
     "puppeteer-extra": "^3.3.4",
+    "request-promise-native": "^1.0.9",
     "sequelize": "^5.22.4",
     "sqlite-to-json": "^0.1.3",
     "sqlite3": "^5.0.2",
