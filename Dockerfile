@@ -14,7 +14,7 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 # you'll need to launch puppeteer with:
 #     browser.launch({executablePath: 'google-chrome-stable'})
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH="/opt/google/chrome/google-chrome".
+ENV PUPPETEER_EXECUTABLE_PATH="/opt/google/chrome/chrome"
 # Run everything after as non-privileged user.
 # ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
