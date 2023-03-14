@@ -1,4 +1,4 @@
-FROM alekzonder/puppeteer
+FROM node:16-bullseye
 
 # If running Docker >= 1.13.0 use docker run's --init arg to reap zombie processes, otherwise
 # uncomment the following lines to have `dumb-init` as PID 1
@@ -7,8 +7,15 @@ FROM alekzonder/puppeteer
 #ENTRYPOINT ["dumb-init", "--"]
 
 USER root
-RUN apt update
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt install ./google-chrome-stable_current_amd64.deb -y
+RUN apt-get update
+RUN apt-get install -y equivs
+
+
+RUN apt-get install -y gnupg2
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update && apt-get -y -f install google-chrome-stable
+
 #USER pptruser
 # Uncomment to skip the chromium download when installing puppeteer. If you do,
 # you'll need to launch puppeteer with:
@@ -33,5 +40,3 @@ RUN npm install
 
 RUN apt install zip imagemagick ffmpeg -y
 EXPOSE 3000
-
-
