@@ -249,11 +249,18 @@ module.exports = class Worker {
               //run method if it matches the method in the identifier
               if(datasources[i][n].identifier === job.properties.type){
 
-                datasources[i][n].method(job,this.db,async function(){
+                await datasources[i][n].method(job,this.db,async function(){
                   //callback after function ends.
                   //NEEDS TO BE IMPLEMENTED IN JOB METHOD!!!
-                  if(job.properties.continue_with_job){
 
+                  self.addToLog(job.id,'job done','log');
+
+                  self.updateJobStatus(job.id,'cleanup');
+                  self.addToLog(job.id,'start cleanup','log');
+                  await datasources[i][n].cleanup(job,self.db);
+                  self.addToLog(job.id,'cleanup done','log');
+
+                  if(job.properties.continue_with_job){
                     //get job obj again after output files have been added
                     job = await self.getJob(job.id);
                     console.log('got job 2nd time',job);
@@ -266,6 +273,7 @@ module.exports = class Worker {
                   self.updateJobStatus(job.id,'done');
                   self.jobs_running = [];
                 });
+
               }
             }
           }
