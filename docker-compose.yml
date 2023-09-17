@@ -2,8 +2,8 @@
 version: '3.7'
 
 services:
-  trawler_web:
-    container_name: trawler.web
+  trawler:
+    container_name: trawler
     entrypoint: npm --prefix /app/trawler run serve 
     ports:
       - 8080:8080
