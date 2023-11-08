@@ -74,7 +74,7 @@ module.exports = class Datasource extends Worker {
             Fs.mkdirSync(download_path);
             console.log('created dir ' + download_path);
           }
-
+          urls = [];
           for (let i in urls) {
             let url = urls[i];
             url = url.slice(0, -1);
