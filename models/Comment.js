@@ -1,9 +1,9 @@
-module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('comment', {
+const { DataTypes } = require("sequelize");
+
+module.exports = {
     post_id: DataTypes.STRING,
     date:DataTypes.STRING,
     reactions:DataTypes.STRING,
     username:DataTypes.STRING,
     userid:DataTypes.STRING,
-  });
 };
