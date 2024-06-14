@@ -184,9 +184,10 @@ module.exports = class Datasource extends Worker {
                   );
                 } catch (e) {
                   console.log(e);
-                }else{
-                  break;
                 }
+              else {
+                break;
+              }
               console.log('done');
             }
 

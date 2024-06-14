@@ -15,7 +15,7 @@ const fs = require('fs').promises;
 const timeout = 7000;
 const run_headless = process.env.run_headless;
 
-const cookie_file = './data/_sessiondata/cookies.json'
+const cookie_file = './data/_sessiondata/cookies.json';
 let browser;
 
 class Utils {
@@ -24,12 +24,12 @@ class Utils {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  createBrowserInstance(){
+  createBrowserInstance() {
     console.log('create browser instance');
     return puppeteer.launch({
       defaultViewport: null,
       headless: false,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
   }
 }
@@ -38,8 +38,7 @@ class FacebookCrawler {
   async getPosts(pagename, limit = 3, callback) {
     try {
       console.log(`limit: ${limit}`);
-      if (browser == null)
-        browser = await new Utils().createBrowserInstance();
+      if (browser == null) browser = await new Utils().createBrowserInstance();
       const page = await browser.newPage();
       const cookiesString = await fs.readFile(cookie_file);
       const cookies = JSON.parse(cookiesString);
@@ -176,8 +175,7 @@ class FacebookCrawler {
 
   async getComments(post_id, link, limit = 3, callback) {
     const comment_url = link;
-    if (browser == null)
-      browser = await new Utils().createBrowserInstance();
+    if (browser == null) browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
     const cookiesString = await fs.readFile(cookie_file);
     const cookies = JSON.parse(cookiesString);
@@ -287,8 +285,7 @@ class FacebookCrawler {
 
     console.log(link);
 
-    if (browser == null)
-      browser = await new Utils().createBrowserInstance();
+    if (browser == null) browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
     const cookiesString = await fs.readFile(cookie_file);
     const cookies = JSON.parse(cookiesString);
@@ -410,11 +407,11 @@ class FacebookCrawler {
     //press enter
     console.log('logged in, now waiting 20s');
     //long timeout is needed because fb is slow af
-    await new Promise(r => setTimeout(r, 20000));
+    await new Promise((r) => setTimeout(r, 20000));
     return setTimeout(async function () {
       try {
         const cookies = await page.cookies();
-        console.log("WRITING COOKIES", cookies);
+        console.log('WRITING COOKIES', cookies);
         await fs.writeFile(cookie_file, JSON.stringify(cookies, null, 2));
         browser.close();
       } catch (e) {
@@ -447,7 +444,7 @@ module.exports = class Datasource extends Worker {
             function (posts) {
               console.log('done crawling posts... add jobs for comments');
               console.log(posts);
-              console.log(sql.Post)
+              console.log(sql.Post);
               sql.Post.bulkCreate(posts);
               if (job.properties.continue)
                 for (let i in posts) {
