@@ -11,10 +11,11 @@ let data_dir = process.env.data_dir;
 
 const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
-const url = require('url');
 
 const timeout = 7000;
 const run_headless = process.env.run_headless;
+
+const cookie_file = './data/_sessiondata/cookies.json'
 let browser;
 
 class Utils {
@@ -23,19 +24,24 @@ class Utils {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+  createBrowserInstance(){
+    console.log('create browser instance');
+    return puppeteer.launch({
+      defaultViewport: null,
+      headless: false,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+  }
 }
 
 class FacebookCrawler {
   async getPosts(pagename, limit = 3, callback) {
     try {
-      console.log(limit);
-
+      console.log(`limit: ${limit}`);
       if (browser == null)
-        browser = await puppeteer.launch({
-          headless: run_headless,
-        });
+        browser = await new Utils().createBrowserInstance();
       const page = await browser.newPage();
-      const cookiesString = await fs.readFile('./cookies.json');
+      const cookiesString = await fs.readFile(cookie_file);
       const cookies = JSON.parse(cookiesString);
       await page.setCookie(...cookies);
 
@@ -139,7 +145,7 @@ class FacebookCrawler {
   }
   async run() {
     try {
-      const cookiesString = await fs.readFile('./cookies.json');
+      const cookiesString = await fs.readFile(cookie_file);
     } catch (e) {
       console.log(e);
       if (e.errno == -2) {
@@ -171,11 +177,9 @@ class FacebookCrawler {
   async getComments(post_id, link, limit = 3, callback) {
     const comment_url = link;
     if (browser == null)
-      browser = await puppeteer.launch({
-        headless: run_headless,
-      });
+      browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
-    const cookiesString = await fs.readFile('./cookies.json');
+    const cookiesString = await fs.readFile(cookie_file);
     const cookies = JSON.parse(cookiesString);
     await page.setCookie(...cookies);
     await page.goto(comment_url);
@@ -260,7 +264,7 @@ class FacebookCrawler {
   async checkAuth(page) {
     let self = this;
     let result = await page.evaluate(async function () {
-      if (document.querySelector('#mobile_login_bar')) {
+      if (document.querySelector('a[aria-label="Log in"]')) {
         return false;
       }
       return true;
@@ -284,11 +288,9 @@ class FacebookCrawler {
     console.log(link);
 
     if (browser == null)
-      browser = await puppeteer.launch({
-        headless: run_headless,
-      });
+      browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
-    const cookiesString = await fs.readFile('./cookies.json');
+    const cookiesString = await fs.readFile(cookie_file);
     const cookies = JSON.parse(cookiesString);
     await page.setCookie(...cookies);
     await page.goto(link);
@@ -394,32 +396,32 @@ class FacebookCrawler {
     const username = process.env.facebook_username;
     const password = process.env.facebook_password;
 
-    const browser = await puppeteer.launch({
-      headless: run_headless,
-    });
+    const browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
 
     await page.goto('https://m.facebook.com/');
-
-    await page.click('#accept-cookie-banner-label');
-    await page.focus('#m_login_email');
+    await page.click('div[aria-label="Allow all cookies"]');
+    await page.focus('input[aria-label="Email address or phone number"]');
     await page.keyboard.type(username);
-    await page.focus('#m_login_password');
+    await page.focus('input[aria-label="Password"]');
     await page.keyboard.type(password);
+    await page.keyboard.press('Enter');
 
     //press enter
-    await page.click('button[name="login"]');
-
+    console.log('logged in, now waiting 20s');
+    //long timeout is needed because fb is slow af
+    await new Promise(r => setTimeout(r, 20000));
     return setTimeout(async function () {
       try {
         const cookies = await page.cookies();
-        await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
+        console.log("WRITING COOKIES", cookies);
+        await fs.writeFile(cookie_file, JSON.stringify(cookies, null, 2));
         browser.close();
       } catch (e) {
         console.log('1');
         console.log(e);
       }
-    }, 3000);
+    }, 10000);
   }
 }
 
@@ -444,6 +446,8 @@ module.exports = class Datasource extends Worker {
             job.properties.limit,
             function (posts) {
               console.log('done crawling posts... add jobs for comments');
+              console.log(posts);
+              console.log(sql.Post)
               sql.Post.bulkCreate(posts);
               if (job.properties.continue)
                 for (let i in posts) {
