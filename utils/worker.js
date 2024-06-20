@@ -6,6 +6,7 @@ const fs = require('fs')
 const SQL = require('./SQL.js');
 
 const axios = require('axios');
+const puppeteer = require('puppeteer');
 require('dotenv').config();
 
 
@@ -106,6 +107,16 @@ module.exports = class Worker {
       job.assign(jobObj)
       .write();
 
+    } 
+    createBrowserInstance(){
+      console.log('create browser instance');
+      return puppeteer.launch({
+        defaultViewport: null,
+        executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        //executablePath: '/Applications/Google\ Chrome.app/Contents/MacOS/chrome/mac_arm-126.0.6478.61/chrome-mac-arm64/Google\ Chrome\ for\ Testing.app/Contents/MacOS/Google\ Chrome\ for\ Testing',
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
     }
 
     async http(method, url, options){

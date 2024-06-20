@@ -2,6 +2,7 @@
  * @file **facebook posts and reactions** scrape facebook posts, comments and reactions (like, heart, etc)
  */
 const path = require('path');
+const os = require('os');
 const Worker = require(path.resolve(__dirname, '../../utils/worker.js'));
 
 const SQL = require(path.resolve(__dirname, '../../utils/SQL.js'));
@@ -15,7 +16,7 @@ const fs = require('fs').promises;
 const timeout = 7000;
 const run_headless = process.env.run_headless;
 
-const cookie_file = './data/_sessiondata/cookies.json';
+const cookie_file = './data/_sessiondata/cookies.json'
 let browser;
 
 class Utils {
@@ -24,31 +25,25 @@ class Utils {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  createBrowserInstance() {
-    console.log('create browser instance');
-    return puppeteer.launch({
-      defaultViewport: null,
-      headless: false,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-  }
+  createBrowserInstance = new Worker().createBrowserInstance;
 }
 
 class FacebookCrawler {
   async getPosts(pagename, limit = 3, callback) {
     try {
       console.log(`limit: ${limit}`);
-      if (browser == null) browser = await new Utils().createBrowserInstance();
+      if (browser == null)
+        browser = await new Utils().createBrowserInstance();
       const page = await browser.newPage();
       const cookiesString = await fs.readFile(cookie_file);
       const cookies = JSON.parse(cookiesString);
       await page.setCookie(...cookies);
 
       await page.goto('https://m.facebook.com/' + pagename);
-      /*await page.setViewport({
-              width: 1200,
-              height: 800
-          });*/
+      page.setViewport({
+              width: 1000,
+              height: 1500
+          })
       let last_length = 0;
       let limit_count = 0;
 
@@ -69,7 +64,7 @@ class FacebookCrawler {
       let interval = setInterval(async function () {
         let items = await page.evaluate(() => {
           let results = [];
-          let items = document.querySelectorAll('article');
+          let items = document.querySelectorAll('blockquote');
 
           items.forEach(async function (item) {
             let json_info = item.getAttribute('data-store');
@@ -121,17 +116,30 @@ class FacebookCrawler {
         await self.autoScroll(page);
         console.log(`autoscroll finished ${limit_count}/${limit}`);
 
+        console.log('take screenshot')
+        await page.screenshot({
+          path: './data/screenshot_'+pagename+'_'+limit_count+'.jpg',
+          fullPage: false,
+          type: 'jpeg',
+          captureBeyondViewport: true,
+          
+        });
+        console.log('./data/screenshot_'+pagename+'_'+limit_count+'.jpg')
+        // Capture screenshot
         if (
-          limit_count >= limit ||
-          not_increased >= 3 //exit if amount does not increase after 3 intervals
+          limit_count >= limit 
+          //|| not_increased >= 30 //exit if amount does not increase after 3 intervals
         ) {
           console.log('done');
+
+
+
           clearInterval(interval);
 
           //add db etries
           //Post.bulkCreate(items);
 
-          await page.close();
+          //await page.close();
           callback(items, browser);
         }
 
@@ -175,7 +183,8 @@ class FacebookCrawler {
 
   async getComments(post_id, link, limit = 3, callback) {
     const comment_url = link;
-    if (browser == null) browser = await new Utils().createBrowserInstance();
+    if (browser == null)
+      browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
     const cookiesString = await fs.readFile(cookie_file);
     const cookies = JSON.parse(cookiesString);
@@ -285,7 +294,8 @@ class FacebookCrawler {
 
     console.log(link);
 
-    if (browser == null) browser = await new Utils().createBrowserInstance();
+    if (browser == null)
+      browser = await new Utils().createBrowserInstance();
     const page = await browser.newPage();
     const cookiesString = await fs.readFile(cookie_file);
     const cookies = JSON.parse(cookiesString);
@@ -369,7 +379,7 @@ class FacebookCrawler {
     await page.evaluate(async () => {
       await new Promise((resolve, reject) => {
         var totalHeight = 0;
-        var distance = 100;
+        var distance = 300;
         let max_scrolls = 3;
         let i = 0;
         var timer = setInterval(() => {
@@ -407,11 +417,11 @@ class FacebookCrawler {
     //press enter
     console.log('logged in, now waiting 20s');
     //long timeout is needed because fb is slow af
-    await new Promise((r) => setTimeout(r, 20000));
+    await new Promise(r => setTimeout(r, 20000));
     return setTimeout(async function () {
       try {
         const cookies = await page.cookies();
-        console.log('WRITING COOKIES', cookies);
+        console.log("WRITING COOKIES", cookies);
         await fs.writeFile(cookie_file, JSON.stringify(cookies, null, 2));
         browser.close();
       } catch (e) {
@@ -444,7 +454,7 @@ module.exports = class Datasource extends Worker {
             function (posts) {
               console.log('done crawling posts... add jobs for comments');
               console.log(posts);
-              console.log(sql.Post);
+              console.log(sql.Post)
               sql.Post.bulkCreate(posts);
               if (job.properties.continue)
                 for (let i in posts) {
