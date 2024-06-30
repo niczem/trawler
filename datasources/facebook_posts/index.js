@@ -41,11 +41,17 @@ class FacebookCrawler {
       await page.goto('https://m.facebook.com/' + pagename);
       page.setViewport({
         width: 1000,
-        height: 1500,
+        height: 1900,
       });
       let last_length = 0;
       let limit_count = 0;
 
+      await page.screenshot({
+        path: './data/screenshot_' + pagename + '_' + limit_count + '_profile.jpg',
+        fullPage: false,
+        type: 'jpeg',
+        captureBeyondViewport: true,
+      });
       await this.autoScroll(page);
       let self = this;
 
@@ -112,8 +118,6 @@ class FacebookCrawler {
           not_increased++;
         }
 
-        await self.autoScroll(page);
-        console.log(`autoscroll finished ${limit_count}/${limit}`);
 
         console.log('take screenshot');
         await page.screenshot({
@@ -125,7 +129,10 @@ class FacebookCrawler {
         console.log(
           './data/screenshot_' + pagename + '_' + limit_count + '.jpg'
         );
-        // Capture screenshot
+
+        await self.autoScroll(page);
+        console.log(`autoscroll finished ${limit_count}/${limit}`);
+
         if (
           limit_count >= limit
           //|| not_increased >= 30 //exit if amount does not increase after 3 intervals
@@ -375,7 +382,7 @@ class FacebookCrawler {
     await page.evaluate(async () => {
       await new Promise((resolve, reject) => {
         var totalHeight = 0;
-        var distance = 300;
+        var distance = 434;
         let max_scrolls = 3;
         let i = 0;
         var timer = setInterval(() => {

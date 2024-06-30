@@ -1,5 +1,5 @@
 data/
-cookies.json
+data/_sessiondata/cookies.json
 
 .DS_Store
 node_modules
