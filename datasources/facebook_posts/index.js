@@ -29,7 +29,7 @@ class Utils {
 }
 
 class FacebookCrawler {
-  async getPosts(pagename, limit = 3, callback) {
+  async getPosts(pagename, limit = 3, job_id, callback) {
     try {
       console.log(`limit: ${limit}`);
       if (browser == null) browser = await new Utils().createBrowserInstance();
@@ -47,7 +47,7 @@ class FacebookCrawler {
       let limit_count = 0;
 
       await page.screenshot({
-        path: './data/screenshot_' + pagename + '_' + limit_count + '_profile.jpg',
+        path: './data/screenshot_' + job_id + '_' + limit_count + '_profile.jpg',
         fullPage: false,
         type: 'jpeg',
         captureBeyondViewport: true,
@@ -121,13 +121,13 @@ class FacebookCrawler {
 
         console.log('take screenshot');
         await page.screenshot({
-          path: './data/screenshot_' + pagename + '_' + limit_count + '.jpg',
+          path: './data/screenshot_' + job_id + '_' + limit_count + '.jpg',
           fullPage: false,
           type: 'jpeg',
           captureBeyondViewport: true,
         });
         console.log(
-          './data/screenshot_' + pagename + '_' + limit_count + '.jpg'
+          './data/screenshot_' + job_id + '_' + limit_count + '.jpg'
         );
 
         await self.autoScroll(page);
@@ -454,6 +454,7 @@ module.exports = class Datasource extends Worker {
           crawler.getPosts(
             job.properties.identifier,
             job.properties.limit,
+            job.id,
             function (posts) {
               console.log('done crawling posts... add jobs for comments');
               console.log(posts);
